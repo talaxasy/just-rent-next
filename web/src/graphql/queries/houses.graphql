@@ -1,0 +1,22 @@
+query Houses($limit: Int!, $cursor: String) {
+  houses(limit: $limit, cursor: $cursor) {
+    hasMore
+    houses {
+      id
+      title
+      createdAt
+      updatedAt
+      rating
+      price
+      bed_count
+      bedroom_count
+      bathroom_count
+      reviewCount
+      pictureUrl
+      user {
+        id
+        username
+      }
+    }
+  }
+}

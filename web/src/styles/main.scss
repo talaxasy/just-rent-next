@@ -1,0 +1,104 @@
+button{
+  outline: none;
+}
+
+input{
+  outline: none;
+}
+
+input:focus{
+  box-shadow: none;
+}
+
+button:focus{
+  box-shadow: none!important;
+}
+
+.geosuggest {
+  font-size: 1rem;
+  position: relative;
+  width: auto;
+  text-align: left;
+}
+
+.geosuggest__input-wrapper{
+  height: 100%;
+  overflow: hidden;
+}
+
+.geosuggest__input{
+  height: 100%;
+  width: 100%;
+  margin-top: -2px;
+}
+.geosuggest__suggests {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 25em;
+  padding: 0;
+  margin-top: 0px;
+  background: #fff;
+  border: 1px solid #00000027;
+  overflow-x: hidden;
+  overflow-y: auto;
+  list-style: none;
+  border-radius: 5px;
+  z-index: 5;
+  -webkit-transition: max-height 0.2s, border 0.2s;
+          transition: max-height 0.2s, border 0.2s;
+}
+.geosuggest__suggests--hidden {
+  max-height: 0;
+  overflow: hidden;
+  border-width: 0;
+}
+
+/**
+ * A geosuggest item
+ */
+.geosuggest__item {
+  font-size: 18px;
+  font-size: 1rem;
+  padding: .5em .65em;
+  cursor: pointer;
+}
+.geosuggest__item:hover,
+.geosuggest__item:focus {
+  background: #f5f5f5;
+}
+.geosuggest__item--active {
+  background: #0000000e;
+  color: #000;
+}
+.geosuggest__item--active:hover,
+.geosuggest__item--active:focus {
+  background: #ccc;
+}
+.geosuggest__item__matched-text {
+  font-weight: bold;
+}
+
+.DateRangePickerInput__withBorder {
+  display: flex;
+  align-items: center;
+}
+
+.DateInput_input{
+  font-size: 16px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  font-weight: 400;
+  font-size: 1rem;
+}
+
+.DateInput{
+  width: 120px;
+}
+
+.DateRangePickerInput__withBorder{
+border-radius: 0.375rem;
+overflow: hidden;
+}
+

@@ -1,0 +1,5 @@
+mutation Register($options: ImportantUserFields!) {
+  register(options: $options) {
+    ...RegularUserResponse
+  }
+}

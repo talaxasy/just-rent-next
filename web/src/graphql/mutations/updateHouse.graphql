@@ -1,0 +1,6 @@
+mutation UpdateHouse($id: Int!, $title: String!) {
+  updateHouse(id: $id, title: $title) {
+    id
+    title
+  }
+}

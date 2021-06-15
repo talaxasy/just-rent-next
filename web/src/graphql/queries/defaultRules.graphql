@@ -1,0 +1,7 @@
+query DefaultRules {
+  defaultRules {
+    id
+    name
+    description
+  }
+}

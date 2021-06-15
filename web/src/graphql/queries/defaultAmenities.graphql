@@ -1,0 +1,7 @@
+query DefaultAmenities {
+  defaultAmenities {
+    id
+    name
+    description
+  }
+}

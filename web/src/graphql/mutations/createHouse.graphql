@@ -1,0 +1,41 @@
+mutation CreateHouse($input: HouseInput!) {
+  createHouse(input: $input) {
+    errors {
+      message
+      field
+    }
+    house {
+      title
+      description
+      country
+      street
+      city
+      state
+      apartment
+      zip
+      bed_count
+      bedroom_count
+      bathroom_count
+      guests_count
+      booking_can_advance_checker
+      booking_can_advance_time
+      price
+      booking_min
+      booking_max
+      amenities
+      rules
+      safety_amenities
+      disability
+      avalible_dates
+      address
+      longitude
+      latitude
+      house_typeId
+      room_typeId
+      booking_before
+      availability_arrivals_start
+      availability_arrivals_end
+      pictureUrl
+    }
+  }
+}

@@ -1,0 +1,10 @@
+query Reviews($houseId: Int!) {
+  reviews(houseId: $houseId) {
+    houseId
+    userId
+    mark
+    text
+    createdAt
+    updatedAt
+  }
+}

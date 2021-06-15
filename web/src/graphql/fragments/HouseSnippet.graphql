@@ -1,0 +1,12 @@
+fragment HouseSnippet on House {
+  id
+  title
+  createdAt
+  updatedAt
+  rating
+  price
+  user {
+    id
+    username
+  }
+}

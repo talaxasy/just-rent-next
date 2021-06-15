@@ -1,0 +1,3 @@
+mutation LeaveReview($houseId: Int!, $mark: Int!, $text: String!) {
+  leaveReview(options: { houseId: $houseId, mark: $mark, text: $text })
+}

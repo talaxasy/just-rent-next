@@ -1,0 +1,26 @@
+query House($id: Int!) {
+  house(id: $id) {
+    id
+    rating
+    title
+    description
+    userId
+    bed_count
+    bedroom_count
+    bathroom_count
+    reviewCount
+    pictureUrl
+    user {
+      id
+      username
+    }
+    room_type {
+      id
+      name
+    }
+    house_type {
+      id
+      name
+    }
+  }
+}
