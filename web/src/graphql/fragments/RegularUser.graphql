@@ -3,4 +3,7 @@ fragment RegularUser on User {
   username
   email
   phone
+  description
+  firstName
+  secondName
 }

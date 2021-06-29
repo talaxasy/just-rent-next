@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.House = void 0;
+const Booking_1 = require("./Booking");
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
 const HouseType_1 = require("./HouseType");
@@ -223,6 +224,10 @@ __decorate([
     typeorm_1.OneToMany(() => Review_1.Review, review => review.house),
     __metadata("design:type", Array)
 ], House.prototype, "reviews", void 0);
+__decorate([
+    typeorm_1.OneToMany(() => Booking_1.Booking, booking => booking.house),
+    __metadata("design:type", Array)
+], House.prototype, "booking", void 0);
 House = __decorate([
     type_graphql_1.ObjectType(),
     typeorm_1.Entity()

@@ -15,8 +15,7 @@ import { withApollo } from "../utils/withApollo";
 const Index: React.FC = () => {
 
   const { data, loading, fetchMore, variables } = useHousesQuery({
-    variables: { limit: 10, cursor: null },
-
+    variables: { limit: 8, cursor: null },
     notifyOnNetworkStatusChange: true,
   });
   const { data: meData } = useMeQuery();
@@ -53,7 +52,7 @@ const Index: React.FC = () => {
             <ModalBody display='flex' flexDir='column' alignItems='center'>
               <Flex flexDir='column' justifyContent='center' alignItems='center'>
                 <Text fontSize='lg' >Чтобы разместить жильё, пожалуйста, укажите свой номер телефона в профиле.</Text>
-                <NextLink href='/profile/edit-profile'>
+                <NextLink href='/profile/settings'>
                   <Button colorScheme='airbnb' mt={5} w="100%" maxW='250px' type='submit'>Редактировать профиль</Button>
                 </NextLink>
               </Flex>
@@ -67,13 +66,13 @@ const Index: React.FC = () => {
         <Button color='#fff' size="sm" colorScheme='airbnb' width='max-content' px={10} py={5} fontSize={15}>
           Разместить жильё
         </Button>
-      </NextLink>;;
+      </NextLink>;
   }
 
 
   return (
     <>
-      <Layout>
+      <Layout footer>
         <Wrapper variant='infinite'>
           <Box display='flex' justifyContent='center' boxShadow='lg' width='100%' bg='url(/system/home_7_croped.jpg) center no-repeat' backgroundSize='cover'>
             <Box maxW='1300px' mx='auto' w='100%' px={4} display='flex'>

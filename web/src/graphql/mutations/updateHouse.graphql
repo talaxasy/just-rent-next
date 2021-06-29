@@ -1,5 +1,5 @@
-mutation UpdateHouse($id: Int!, $title: String!) {
-  updateHouse(id: $id, title: $title) {
+mutation UpdateHouse($id: Int!, $title: String!, $description: String!) {
+  updateHouse(id: $id, title: $title, description: $description) {
     id
     title
   }

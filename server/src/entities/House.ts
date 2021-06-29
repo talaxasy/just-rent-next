@@ -1,3 +1,4 @@
+import { Booking } from './Booking';
 import { GraphQLUpload } from 'graphql-upload';
 import { Field, Int, ObjectType } from "type-graphql";
 import GraphQLJSON, { GraphQLJSONObject } from 'graphql-type-json';
@@ -173,4 +174,8 @@ export class House extends BaseEntity {
 
     @OneToMany(() => Review, review => review.house) // FK для Review
     reviews: Review[];
+
+    @OneToMany(() => Booking, booking => booking.house) // FK для Booking
+    booking: Booking[];
+
 }

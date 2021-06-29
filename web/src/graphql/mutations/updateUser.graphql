@@ -1,0 +1,15 @@
+mutation UpdateUser(
+  $phone: String!
+  $description: String!
+  $secondName: String!
+  $firstName: String!
+) {
+  updateUser(
+    phone: $phone
+    description: $description
+    secondName: $secondName
+    firstName: $firstName
+  ) {
+    ...RegularUser
+  }
+}

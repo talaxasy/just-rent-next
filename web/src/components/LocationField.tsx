@@ -122,6 +122,7 @@ class LocationField extends React.PureComponent<LocationFieldProps, State> {
                 {description && <Box fontSize='lg' opacity='.9' mb={5}>{description}</Box>}
                 <Flex flexDirection='column'>
                     <Input
+                        name='street'
                         as={Geosuggest}
                         placeholder="Улица"
                         onSuggestSelect={this.onSuggestSelect}

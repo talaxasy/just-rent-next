@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
+const Booking_1 = require("./Booking");
 const typeorm_1 = require("typeorm");
 const type_graphql_1 = require("type-graphql");
 const House_1 = require("./House");
@@ -31,6 +32,16 @@ __decorate([
     typeorm_1.Column({ unique: true }),
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    typeorm_1.Column({ default: '' }),
+    __metadata("design:type", String)
+], User.prototype, "firstName", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    typeorm_1.Column({ default: '' }),
+    __metadata("design:type", String)
+], User.prototype, "secondName", void 0);
 __decorate([
     type_graphql_1.Field(() => String),
     typeorm_1.Column({ default: '' }),
@@ -63,6 +74,10 @@ __decorate([
     typeorm_1.OneToMany(() => Review_1.Review, review => review.user),
     __metadata("design:type", Array)
 ], User.prototype, "reviews", void 0);
+__decorate([
+    typeorm_1.OneToMany(() => Booking_1.Booking, booking => booking.user),
+    __metadata("design:type", Array)
+], User.prototype, "booking", void 0);
 __decorate([
     type_graphql_1.Field(() => String),
     typeorm_1.CreateDateColumn(),

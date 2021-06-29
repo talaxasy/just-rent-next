@@ -25,6 +25,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserResolver = exports.UserResponse = void 0;
+const isAuth_1 = require("./../utils/middleware/isAuth");
 const argon2_1 = __importDefault(require("argon2"));
 const type_graphql_1 = require("type-graphql");
 const uuid_1 = require("uuid");
@@ -90,6 +91,12 @@ let UserResolver = class UserResolver {
             return { user };
         });
     }
+    updateUser(phone, description, secondName, firstName, { req }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield User_1.User.update({ id: req.session.userId }, { phone, description, firstName, secondName });
+            return yield User_1.User.findOne({ id: req.session.userId });
+        });
+    }
     forgotPassword(email, { redis }) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield User_1.User.findOne({ where: { email } });
@@ -106,10 +113,12 @@ let UserResolver = class UserResolver {
         });
     }
     me({ req }) {
-        if (!req.session.userId) {
-            return null;
-        }
-        return User_1.User.findOne(req.session.userId);
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!req.session.userId) {
+                return null;
+            }
+            return yield User_1.User.findOne(req.session.userId);
+        });
     }
     register(options, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -227,6 +236,18 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "changePassword", null);
 __decorate([
+    type_graphql_1.Mutation(() => User_1.User, { nullable: true }),
+    type_graphql_1.UseMiddleware(isAuth_1.isAuth),
+    __param(0, type_graphql_1.Arg('phone', () => String)),
+    __param(1, type_graphql_1.Arg('description', () => String)),
+    __param(2, type_graphql_1.Arg('secondName', () => String)),
+    __param(3, type_graphql_1.Arg('firstName', () => String)),
+    __param(4, type_graphql_1.Ctx()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String, String, Object]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "updateUser", null);
+__decorate([
     type_graphql_1.Mutation(() => Boolean),
     __param(0, type_graphql_1.Arg('email')),
     __param(1, type_graphql_1.Ctx()),
@@ -239,7 +260,7 @@ __decorate([
     __param(0, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "me", null);
 __decorate([
     type_graphql_1.Mutation(() => UserResponse),

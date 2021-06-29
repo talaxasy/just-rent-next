@@ -1,3 +1,4 @@
+import { Booking } from './Booking';
 import { Entity, PrimaryGeneratedColumn, CreateDateColumn, Column, UpdateDateColumn, BaseEntity, OneToMany } from 'typeorm';
 import { Field, ObjectType } from "type-graphql";
 import { House } from './House';
@@ -17,6 +18,14 @@ export class User extends BaseEntity {
     @Field()
     @Column({ unique: true })
     email!: string;
+
+    @Field()
+    @Column({ default: '' })
+    firstName!: string;
+
+    @Field()
+    @Column({ default: '' })
+    secondName!: string;
 
     @Field(() => String)
     @Column({ default: '' })
@@ -42,6 +51,9 @@ export class User extends BaseEntity {
 
     @OneToMany(() => Review, review => review.user) // Передача инфы к user в Review
     reviews: Review[];
+
+    @OneToMany(() => Booking, booking => booking.user) // Передача инфы user в Booking
+    booking: Booking[];
 
     @Field(() => String)
     @CreateDateColumn()

@@ -8,6 +8,7 @@
     "gen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
+    "-": "^0.0.1",
     "@apollo/client": "^3.3.19",
     "@chakra-ui/icons": "^1.0.2",
     "@chakra-ui/react": "^1.0.4",
@@ -19,6 +20,7 @@
     "@urql/exchange-graphcache": "^3.3.3",
     "apollo-upload-client": "^15.0.0",
     "doka": "^0.1.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "formik": "^2.2.6",
     "formik-chakra-ui": "^1.4.7",
     "framer-motion": "^2.9.4",

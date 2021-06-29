@@ -25,6 +25,10 @@ export type Query = {
   defaultAmenities: Array<DefaultAmenities>;
   defaultRules: Array<DefaultRules>;
   reviews: Array<Review>;
+  searchListings?: Maybe<Array<House>>;
+  getCustomerBookings?: Maybe<Array<Booking>>;
+  getAdminBookings?: Maybe<Array<Booking>>;
+  getBookings: Array<Scalars['String']>;
   houses: PaginatedHouses;
   house?: Maybe<House>;
 };
@@ -35,7 +39,18 @@ export type QueryReviewsArgs = {
 };
 
 
+export type QuerySearchListingsArgs = {
+  input: SearchInput;
+};
+
+
+export type QueryGetBookingsArgs = {
+  houseId: Scalars['Int'];
+};
+
+
 export type QueryHousesArgs = {
+  housesById?: Maybe<Scalars['Boolean']>;
   cursor?: Maybe<Scalars['String']>;
   limit: Scalars['Int'];
 };
@@ -50,6 +65,8 @@ export type User = {
   id: Scalars['Float'];
   username: Scalars['String'];
   email: Scalars['String'];
+  firstName: Scalars['String'];
+  secondName: Scalars['String'];
   description: Scalars['String'];
   phone: Scalars['String'];
   gender: Scalars['Float'];
@@ -160,6 +177,37 @@ export type House = {
   textSnippet: Scalars['String'];
 };
 
+export type SearchInput = {
+  country?: Maybe<Scalars['String']>;
+  street?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  apartment?: Maybe<Scalars['String']>;
+  bed_count?: Maybe<Scalars['Float']>;
+  guests_count?: Maybe<Scalars['Float']>;
+  startDate?: Maybe<Scalars['Boolean']>;
+  endDate?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['Float']>;
+  lat?: Maybe<Scalars['Float']>;
+  lng?: Maybe<Scalars['Float']>;
+  rating?: Maybe<Scalars['Float']>;
+};
+
+export type Booking = {
+  __typename?: 'Booking';
+  id: Scalars['Float'];
+  endDate: Scalars['String'];
+  startDate: Scalars['String'];
+  guests_count: Scalars['Float'];
+  status: Scalars['String'];
+  userId: Scalars['Float'];
+  user: User;
+  houseId: Scalars['Float'];
+  house: House;
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
 export type PaginatedHouses = {
   __typename?: 'PaginatedHouses';
   houses: Array<House>;
@@ -169,21 +217,32 @@ export type PaginatedHouses = {
 export type Mutation = {
   __typename?: 'Mutation';
   changePassword: UserResponse;
+  updateUser?: Maybe<User>;
   forgotPassword: Scalars['Boolean'];
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
+  doBooking: Array<Scalars['String']>;
   createHouse: HouseResponse;
-  addHousePicture: Scalars['Boolean'];
   leaveReview: Scalars['Boolean'];
   updateHouse?: Maybe<House>;
   deleteHouse: Scalars['Boolean'];
+  deleteBooking: Scalars['Boolean'];
+  changeBookingStatus: Scalars['Boolean'];
 };
 
 
 export type MutationChangePasswordArgs = {
   newPassword: Scalars['String'];
   token: Scalars['String'];
+};
+
+
+export type MutationUpdateUserArgs = {
+  firstName: Scalars['String'];
+  secondName: Scalars['String'];
+  description: Scalars['String'];
+  phone: Scalars['String'];
 };
 
 
@@ -203,13 +262,16 @@ export type MutationLoginArgs = {
 };
 
 
-export type MutationCreateHouseArgs = {
-  input: HouseInput;
+export type MutationDoBookingArgs = {
+  houseId: Scalars['Int'];
+  guests_count: Scalars['Int'];
+  endDate: Scalars['String'];
+  startDate: Scalars['String'];
 };
 
 
-export type MutationAddHousePictureArgs = {
-  picture: Scalars['Upload'];
+export type MutationCreateHouseArgs = {
+  input: HouseInput;
 };
 
 
@@ -219,12 +281,25 @@ export type MutationLeaveReviewArgs = {
 
 
 export type MutationUpdateHouseArgs = {
+  description: Scalars['String'];
   title: Scalars['String'];
   id: Scalars['Int'];
 };
 
 
 export type MutationDeleteHouseArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type MutationDeleteBookingArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type MutationChangeBookingStatusArgs = {
+  finished?: Maybe<Scalars['Int']>;
+  active?: Maybe<Scalars['Int']>;
   id: Scalars['Int'];
 };
 
@@ -310,7 +385,7 @@ export type RegularErrorFragment = (
 
 export type RegularUserFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'username' | 'email' | 'phone'>
+  & Pick<User, 'id' | 'username' | 'email' | 'phone' | 'description' | 'firstName' | 'secondName'>
 );
 
 export type RegularUserResponseFragment = (
@@ -322,6 +397,18 @@ export type RegularUserResponseFragment = (
     { __typename?: 'User' }
     & RegularUserFragment
   )> }
+);
+
+export type ChangeBookingStatusMutationVariables = Exact<{
+  id: Scalars['Int'];
+  active?: Maybe<Scalars['Int']>;
+  finished?: Maybe<Scalars['Int']>;
+}>;
+
+
+export type ChangeBookingStatusMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'changeBookingStatus'>
 );
 
 export type ChangePasswordMutationVariables = Exact<{
@@ -357,6 +444,16 @@ export type CreateHouseMutation = (
   ) }
 );
 
+export type DeleteBookingMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteBookingMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteBooking'>
+);
+
 export type DeleteHouseMutationVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -365,6 +462,19 @@ export type DeleteHouseMutationVariables = Exact<{
 export type DeleteHouseMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'deleteHouse'>
+);
+
+export type DoBookingMutationVariables = Exact<{
+  startDate: Scalars['String'];
+  endDate: Scalars['String'];
+  guests_count: Scalars['Int'];
+  houseId: Scalars['Int'];
+}>;
+
+
+export type DoBookingMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'doBooking'>
 );
 
 export type ForgotPasswordMutationVariables = Exact<{
@@ -433,6 +543,7 @@ export type RegisterMutation = (
 export type UpdateHouseMutationVariables = Exact<{
   id: Scalars['Int'];
   title: Scalars['String'];
+  description: Scalars['String'];
 }>;
 
 
@@ -441,6 +552,22 @@ export type UpdateHouseMutation = (
   & { updateHouse?: Maybe<(
     { __typename?: 'House' }
     & Pick<House, 'id' | 'title'>
+  )> }
+);
+
+export type UpdateUserMutationVariables = Exact<{
+  phone: Scalars['String'];
+  description: Scalars['String'];
+  secondName: Scalars['String'];
+  firstName: Scalars['String'];
+}>;
+
+
+export type UpdateUserMutation = (
+  { __typename?: 'Mutation' }
+  & { updateUser?: Maybe<(
+    { __typename?: 'User' }
+    & RegularUserFragment
   )> }
 );
 
@@ -488,6 +615,60 @@ export type DefaultRulesQuery = (
   )> }
 );
 
+export type GetAdminBookingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAdminBookingsQuery = (
+  { __typename?: 'Query' }
+  & { getAdminBookings?: Maybe<Array<(
+    { __typename?: 'Booking' }
+    & Pick<Booking, 'id' | 'endDate' | 'startDate' | 'guests_count' | 'status' | 'userId' | 'houseId' | 'createdAt' | 'updatedAt'>
+    & { user: (
+      { __typename?: 'User' }
+      & Pick<User, 'username' | 'id'>
+    ), house: (
+      { __typename?: 'House' }
+      & Pick<House, 'id' | 'pictureUrl' | 'title' | 'country' | 'street' | 'state' | 'apartment' | 'price' | 'city'>
+      & { user: (
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'username' | 'phone' | 'firstName' | 'secondName'>
+      ) }
+    ) }
+  )>> }
+);
+
+export type GetBookingsQueryVariables = Exact<{
+  houseId: Scalars['Int'];
+}>;
+
+
+export type GetBookingsQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'getBookings'>
+);
+
+export type GetCustomerBookingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCustomerBookingsQuery = (
+  { __typename?: 'Query' }
+  & { getCustomerBookings?: Maybe<Array<(
+    { __typename?: 'Booking' }
+    & Pick<Booking, 'id' | 'endDate' | 'startDate' | 'guests_count' | 'status' | 'userId' | 'houseId' | 'createdAt' | 'updatedAt'>
+    & { user: (
+      { __typename?: 'User' }
+      & Pick<User, 'username'>
+    ), house: (
+      { __typename?: 'House' }
+      & Pick<House, 'id' | 'pictureUrl' | 'title' | 'country' | 'street' | 'state' | 'apartment' | 'price' | 'city'>
+      & { user: (
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'username' | 'phone' | 'firstName' | 'secondName'>
+      ) }
+    ) }
+  )>> }
+);
+
 export type HouseQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -497,7 +678,7 @@ export type HouseQuery = (
   { __typename?: 'Query' }
   & { house?: Maybe<(
     { __typename?: 'House' }
-    & Pick<House, 'id' | 'rating' | 'title' | 'description' | 'userId' | 'bed_count' | 'bedroom_count' | 'bathroom_count' | 'reviewCount' | 'pictureUrl'>
+    & Pick<House, 'title' | 'description' | 'country' | 'street' | 'city' | 'state' | 'apartment' | 'zip' | 'bed_count' | 'bedroom_count' | 'bathroom_count' | 'guests_count' | 'booking_can_advance_checker' | 'booking_can_advance_time' | 'price' | 'booking_min' | 'booking_max' | 'amenities' | 'rules' | 'safety_amenities' | 'disability' | 'avalible_dates' | 'address' | 'longitude' | 'latitude' | 'house_typeId' | 'room_typeId' | 'booking_before' | 'availability_arrivals_start' | 'availability_arrivals_end' | 'pictureUrl' | 'createdAt' | 'updatedAt' | 'id' | 'userId' | 'rating' | 'reviewCount'>
     & { user: (
       { __typename?: 'User' }
       & Pick<User, 'id' | 'username'>
@@ -514,6 +695,7 @@ export type HouseQuery = (
 export type HousesQueryVariables = Exact<{
   limit: Scalars['Int'];
   cursor?: Maybe<Scalars['String']>;
+  housesById?: Maybe<Scalars['Boolean']>;
 }>;
 
 
@@ -568,6 +750,19 @@ export type SafetyAmenitiesQuery = (
   )> }
 );
 
+export type SearchListingsQueryVariables = Exact<{
+  input: SearchInput;
+}>;
+
+
+export type SearchListingsQuery = (
+  { __typename?: 'Query' }
+  & { searchListings?: Maybe<Array<(
+    { __typename?: 'House' }
+    & Pick<House, 'title' | 'description' | 'country' | 'street' | 'city' | 'state' | 'apartment' | 'zip' | 'bed_count' | 'bedroom_count' | 'bathroom_count' | 'guests_count' | 'booking_can_advance_checker' | 'booking_can_advance_time' | 'price' | 'booking_min' | 'booking_max' | 'amenities' | 'rules' | 'safety_amenities' | 'disability' | 'avalible_dates' | 'address' | 'longitude' | 'latitude' | 'house_typeId' | 'room_typeId' | 'booking_before' | 'availability_arrivals_start' | 'availability_arrivals_end' | 'pictureUrl' | 'createdAt' | 'updatedAt' | 'id' | 'userId' | 'rating' | 'reviewCount'>
+  )>> }
+);
+
 export const HouseSnippetFragmentDoc = gql`
     fragment HouseSnippet on House {
   id
@@ -594,6 +789,9 @@ export const RegularUserFragmentDoc = gql`
   username
   email
   phone
+  description
+  firstName
+  secondName
 }
     `;
 export const RegularUserResponseFragmentDoc = gql`
@@ -607,6 +805,39 @@ export const RegularUserResponseFragmentDoc = gql`
 }
     ${RegularErrorFragmentDoc}
 ${RegularUserFragmentDoc}`;
+export const ChangeBookingStatusDocument = gql`
+    mutation ChangeBookingStatus($id: Int!, $active: Int, $finished: Int) {
+  changeBookingStatus(id: $id, active: $active, finished: $finished)
+}
+    `;
+export type ChangeBookingStatusMutationFn = Apollo.MutationFunction<ChangeBookingStatusMutation, ChangeBookingStatusMutationVariables>;
+
+/**
+ * __useChangeBookingStatusMutation__
+ *
+ * To run a mutation, you first call `useChangeBookingStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChangeBookingStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [changeBookingStatusMutation, { data, loading, error }] = useChangeBookingStatusMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      active: // value for 'active'
+ *      finished: // value for 'finished'
+ *   },
+ * });
+ */
+export function useChangeBookingStatusMutation(baseOptions?: Apollo.MutationHookOptions<ChangeBookingStatusMutation, ChangeBookingStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ChangeBookingStatusMutation, ChangeBookingStatusMutationVariables>(ChangeBookingStatusDocument, options);
+      }
+export type ChangeBookingStatusMutationHookResult = ReturnType<typeof useChangeBookingStatusMutation>;
+export type ChangeBookingStatusMutationResult = Apollo.MutationResult<ChangeBookingStatusMutation>;
+export type ChangeBookingStatusMutationOptions = Apollo.BaseMutationOptions<ChangeBookingStatusMutation, ChangeBookingStatusMutationVariables>;
 export const ChangePasswordDocument = gql`
     mutation ChangePassword($token: String!, $newPassword: String!) {
   changePassword(token: $token, newPassword: $newPassword) {
@@ -710,6 +941,37 @@ export function useCreateHouseMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateHouseMutationHookResult = ReturnType<typeof useCreateHouseMutation>;
 export type CreateHouseMutationResult = Apollo.MutationResult<CreateHouseMutation>;
 export type CreateHouseMutationOptions = Apollo.BaseMutationOptions<CreateHouseMutation, CreateHouseMutationVariables>;
+export const DeleteBookingDocument = gql`
+    mutation DeleteBooking($id: Int!) {
+  deleteBooking(id: $id)
+}
+    `;
+export type DeleteBookingMutationFn = Apollo.MutationFunction<DeleteBookingMutation, DeleteBookingMutationVariables>;
+
+/**
+ * __useDeleteBookingMutation__
+ *
+ * To run a mutation, you first call `useDeleteBookingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteBookingMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteBookingMutation, { data, loading, error }] = useDeleteBookingMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteBookingMutation(baseOptions?: Apollo.MutationHookOptions<DeleteBookingMutation, DeleteBookingMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteBookingMutation, DeleteBookingMutationVariables>(DeleteBookingDocument, options);
+      }
+export type DeleteBookingMutationHookResult = ReturnType<typeof useDeleteBookingMutation>;
+export type DeleteBookingMutationResult = Apollo.MutationResult<DeleteBookingMutation>;
+export type DeleteBookingMutationOptions = Apollo.BaseMutationOptions<DeleteBookingMutation, DeleteBookingMutationVariables>;
 export const DeleteHouseDocument = gql`
     mutation DeleteHouse($id: Int!) {
   deleteHouse(id: $id)
@@ -741,6 +1003,45 @@ export function useDeleteHouseMutation(baseOptions?: Apollo.MutationHookOptions<
 export type DeleteHouseMutationHookResult = ReturnType<typeof useDeleteHouseMutation>;
 export type DeleteHouseMutationResult = Apollo.MutationResult<DeleteHouseMutation>;
 export type DeleteHouseMutationOptions = Apollo.BaseMutationOptions<DeleteHouseMutation, DeleteHouseMutationVariables>;
+export const DoBookingDocument = gql`
+    mutation DoBooking($startDate: String!, $endDate: String!, $guests_count: Int!, $houseId: Int!) {
+  doBooking(
+    startDate: $startDate
+    endDate: $endDate
+    guests_count: $guests_count
+    houseId: $houseId
+  )
+}
+    `;
+export type DoBookingMutationFn = Apollo.MutationFunction<DoBookingMutation, DoBookingMutationVariables>;
+
+/**
+ * __useDoBookingMutation__
+ *
+ * To run a mutation, you first call `useDoBookingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDoBookingMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [doBookingMutation, { data, loading, error }] = useDoBookingMutation({
+ *   variables: {
+ *      startDate: // value for 'startDate'
+ *      endDate: // value for 'endDate'
+ *      guests_count: // value for 'guests_count'
+ *      houseId: // value for 'houseId'
+ *   },
+ * });
+ */
+export function useDoBookingMutation(baseOptions?: Apollo.MutationHookOptions<DoBookingMutation, DoBookingMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DoBookingMutation, DoBookingMutationVariables>(DoBookingDocument, options);
+      }
+export type DoBookingMutationHookResult = ReturnType<typeof useDoBookingMutation>;
+export type DoBookingMutationResult = Apollo.MutationResult<DoBookingMutation>;
+export type DoBookingMutationOptions = Apollo.BaseMutationOptions<DoBookingMutation, DoBookingMutationVariables>;
 export const ForgotPasswordDocument = gql`
     mutation ForgotPassword($email: String!) {
   forgotPassword(email: $email)
@@ -909,8 +1210,8 @@ export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
 export const UpdateHouseDocument = gql`
-    mutation UpdateHouse($id: Int!, $title: String!) {
-  updateHouse(id: $id, title: $title) {
+    mutation UpdateHouse($id: Int!, $title: String!, $description: String!) {
+  updateHouse(id: $id, title: $title, description: $description) {
     id
     title
   }
@@ -933,6 +1234,7 @@ export type UpdateHouseMutationFn = Apollo.MutationFunction<UpdateHouseMutation,
  *   variables: {
  *      id: // value for 'id'
  *      title: // value for 'title'
+ *      description: // value for 'description'
  *   },
  * });
  */
@@ -943,6 +1245,47 @@ export function useUpdateHouseMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UpdateHouseMutationHookResult = ReturnType<typeof useUpdateHouseMutation>;
 export type UpdateHouseMutationResult = Apollo.MutationResult<UpdateHouseMutation>;
 export type UpdateHouseMutationOptions = Apollo.BaseMutationOptions<UpdateHouseMutation, UpdateHouseMutationVariables>;
+export const UpdateUserDocument = gql`
+    mutation UpdateUser($phone: String!, $description: String!, $secondName: String!, $firstName: String!) {
+  updateUser(
+    phone: $phone
+    description: $description
+    secondName: $secondName
+    firstName: $firstName
+  ) {
+    ...RegularUser
+  }
+}
+    ${RegularUserFragmentDoc}`;
+export type UpdateUserMutationFn = Apollo.MutationFunction<UpdateUserMutation, UpdateUserMutationVariables>;
+
+/**
+ * __useUpdateUserMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserMutation, { data, loading, error }] = useUpdateUserMutation({
+ *   variables: {
+ *      phone: // value for 'phone'
+ *      description: // value for 'description'
+ *      secondName: // value for 'secondName'
+ *      firstName: // value for 'firstName'
+ *   },
+ * });
+ */
+export function useUpdateUserMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserMutation, UpdateUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, options);
+      }
+export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
+export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
+export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
 export const DefaultAmenitiesDocument = gql`
     query DefaultAmenities {
   defaultAmenities {
@@ -1087,19 +1430,207 @@ export function useDefaultRulesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type DefaultRulesQueryHookResult = ReturnType<typeof useDefaultRulesQuery>;
 export type DefaultRulesLazyQueryHookResult = ReturnType<typeof useDefaultRulesLazyQuery>;
 export type DefaultRulesQueryResult = Apollo.QueryResult<DefaultRulesQuery, DefaultRulesQueryVariables>;
+export const GetAdminBookingsDocument = gql`
+    query GetAdminBookings {
+  getAdminBookings {
+    id
+    endDate
+    startDate
+    guests_count
+    status
+    userId
+    houseId
+    createdAt
+    updatedAt
+    user {
+      username
+      id
+    }
+    house {
+      user {
+        id
+        username
+        phone
+        firstName
+        secondName
+      }
+      id
+      pictureUrl
+      title
+      country
+      street
+      state
+      apartment
+      price
+      city
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAdminBookingsQuery__
+ *
+ * To run a query within a React component, call `useGetAdminBookingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAdminBookingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAdminBookingsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAdminBookingsQuery(baseOptions?: Apollo.QueryHookOptions<GetAdminBookingsQuery, GetAdminBookingsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAdminBookingsQuery, GetAdminBookingsQueryVariables>(GetAdminBookingsDocument, options);
+      }
+export function useGetAdminBookingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAdminBookingsQuery, GetAdminBookingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAdminBookingsQuery, GetAdminBookingsQueryVariables>(GetAdminBookingsDocument, options);
+        }
+export type GetAdminBookingsQueryHookResult = ReturnType<typeof useGetAdminBookingsQuery>;
+export type GetAdminBookingsLazyQueryHookResult = ReturnType<typeof useGetAdminBookingsLazyQuery>;
+export type GetAdminBookingsQueryResult = Apollo.QueryResult<GetAdminBookingsQuery, GetAdminBookingsQueryVariables>;
+export const GetBookingsDocument = gql`
+    query GetBookings($houseId: Int!) {
+  getBookings(houseId: $houseId)
+}
+    `;
+
+/**
+ * __useGetBookingsQuery__
+ *
+ * To run a query within a React component, call `useGetBookingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBookingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBookingsQuery({
+ *   variables: {
+ *      houseId: // value for 'houseId'
+ *   },
+ * });
+ */
+export function useGetBookingsQuery(baseOptions: Apollo.QueryHookOptions<GetBookingsQuery, GetBookingsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBookingsQuery, GetBookingsQueryVariables>(GetBookingsDocument, options);
+      }
+export function useGetBookingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBookingsQuery, GetBookingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBookingsQuery, GetBookingsQueryVariables>(GetBookingsDocument, options);
+        }
+export type GetBookingsQueryHookResult = ReturnType<typeof useGetBookingsQuery>;
+export type GetBookingsLazyQueryHookResult = ReturnType<typeof useGetBookingsLazyQuery>;
+export type GetBookingsQueryResult = Apollo.QueryResult<GetBookingsQuery, GetBookingsQueryVariables>;
+export const GetCustomerBookingsDocument = gql`
+    query GetCustomerBookings {
+  getCustomerBookings {
+    id
+    endDate
+    startDate
+    guests_count
+    status
+    userId
+    houseId
+    createdAt
+    updatedAt
+    user {
+      username
+    }
+    house {
+      user {
+        id
+        username
+        phone
+        firstName
+        secondName
+      }
+      id
+      pictureUrl
+      title
+      country
+      street
+      state
+      apartment
+      price
+      city
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCustomerBookingsQuery__
+ *
+ * To run a query within a React component, call `useGetCustomerBookingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCustomerBookingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCustomerBookingsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCustomerBookingsQuery(baseOptions?: Apollo.QueryHookOptions<GetCustomerBookingsQuery, GetCustomerBookingsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCustomerBookingsQuery, GetCustomerBookingsQueryVariables>(GetCustomerBookingsDocument, options);
+      }
+export function useGetCustomerBookingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCustomerBookingsQuery, GetCustomerBookingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCustomerBookingsQuery, GetCustomerBookingsQueryVariables>(GetCustomerBookingsDocument, options);
+        }
+export type GetCustomerBookingsQueryHookResult = ReturnType<typeof useGetCustomerBookingsQuery>;
+export type GetCustomerBookingsLazyQueryHookResult = ReturnType<typeof useGetCustomerBookingsLazyQuery>;
+export type GetCustomerBookingsQueryResult = Apollo.QueryResult<GetCustomerBookingsQuery, GetCustomerBookingsQueryVariables>;
 export const HouseDocument = gql`
     query House($id: Int!) {
   house(id: $id) {
-    id
-    rating
     title
     description
-    userId
+    country
+    street
+    city
+    state
+    apartment
+    zip
     bed_count
     bedroom_count
     bathroom_count
-    reviewCount
+    guests_count
+    booking_can_advance_checker
+    booking_can_advance_time
+    price
+    booking_min
+    booking_max
+    amenities
+    rules
+    safety_amenities
+    disability
+    avalible_dates
+    address
+    longitude
+    latitude
+    house_typeId
+    room_typeId
+    booking_before
+    availability_arrivals_start
+    availability_arrivals_end
     pictureUrl
+    createdAt
+    updatedAt
+    id
+    userId
+    rating
+    reviewCount
+    safety_amenities
     user {
       id
       username
@@ -1144,8 +1675,8 @@ export type HouseQueryHookResult = ReturnType<typeof useHouseQuery>;
 export type HouseLazyQueryHookResult = ReturnType<typeof useHouseLazyQuery>;
 export type HouseQueryResult = Apollo.QueryResult<HouseQuery, HouseQueryVariables>;
 export const HousesDocument = gql`
-    query Houses($limit: Int!, $cursor: String) {
-  houses(limit: $limit, cursor: $cursor) {
+    query Houses($limit: Int!, $cursor: String, $housesById: Boolean) {
+  houses(limit: $limit, cursor: $cursor, housesById: $housesById) {
     hasMore
     houses {
       id
@@ -1182,6 +1713,7 @@ export const HousesDocument = gql`
  *   variables: {
  *      limit: // value for 'limit'
  *      cursor: // value for 'cursor'
+ *      housesById: // value for 'housesById'
  *   },
  * });
  */
@@ -1306,3 +1838,74 @@ export function useSafetyAmenitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type SafetyAmenitiesQueryHookResult = ReturnType<typeof useSafetyAmenitiesQuery>;
 export type SafetyAmenitiesLazyQueryHookResult = ReturnType<typeof useSafetyAmenitiesLazyQuery>;
 export type SafetyAmenitiesQueryResult = Apollo.QueryResult<SafetyAmenitiesQuery, SafetyAmenitiesQueryVariables>;
+export const SearchListingsDocument = gql`
+    query SearchListings($input: SearchInput!) {
+  searchListings(input: $input) {
+    title
+    description
+    country
+    street
+    city
+    state
+    apartment
+    zip
+    bed_count
+    bedroom_count
+    bathroom_count
+    guests_count
+    booking_can_advance_checker
+    booking_can_advance_time
+    price
+    booking_min
+    booking_max
+    amenities
+    rules
+    safety_amenities
+    disability
+    avalible_dates
+    address
+    longitude
+    latitude
+    house_typeId
+    room_typeId
+    booking_before
+    availability_arrivals_start
+    availability_arrivals_end
+    pictureUrl
+    createdAt
+    updatedAt
+    id
+    userId
+    rating
+    reviewCount
+  }
+}
+    `;
+
+/**
+ * __useSearchListingsQuery__
+ *
+ * To run a query within a React component, call `useSearchListingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchListingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchListingsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSearchListingsQuery(baseOptions: Apollo.QueryHookOptions<SearchListingsQuery, SearchListingsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchListingsQuery, SearchListingsQueryVariables>(SearchListingsDocument, options);
+      }
+export function useSearchListingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchListingsQuery, SearchListingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchListingsQuery, SearchListingsQueryVariables>(SearchListingsDocument, options);
+        }
+export type SearchListingsQueryHookResult = ReturnType<typeof useSearchListingsQuery>;
+export type SearchListingsLazyQueryHookResult = ReturnType<typeof useSearchListingsLazyQuery>;
+export type SearchListingsQueryResult = Apollo.QueryResult<SearchListingsQuery, SearchListingsQueryVariables>;

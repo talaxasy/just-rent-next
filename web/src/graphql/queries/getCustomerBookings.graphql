@@ -1,0 +1,34 @@
+query GetCustomerBookings {
+  getCustomerBookings {
+    id
+    endDate
+    startDate
+    guests_count
+    status
+    userId
+    houseId
+    createdAt
+    updatedAt
+    user {
+      username
+    }
+    house {
+      user {
+        id
+        username
+        phone
+        firstName
+        secondName
+      }
+      id
+      pictureUrl
+      title
+      country
+      street
+      state
+      apartment
+      price
+      city
+    }
+  }
+}

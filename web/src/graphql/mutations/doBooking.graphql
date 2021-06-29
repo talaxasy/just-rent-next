@@ -1,0 +1,13 @@
+mutation DoBooking(
+  $startDate: String!
+  $endDate: String!
+  $guests_count: Int!
+  $houseId: Int!
+) {
+  doBooking(
+    startDate: $startDate
+    endDate: $endDate
+    guests_count: $guests_count
+    houseId: $houseId
+  )
+}

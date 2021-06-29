@@ -62,54 +62,8 @@ const NavBar: React.FC<NavBar> = ({ }) => {
                                 ) : (
                                     <MenuGroup title="Профиль">
                                         <MenuItem onClick={async () => { await logout(); await apolloClient.resetStore(); }}>Выйти</MenuItem>
-                                        <MenuItem onClick={onOpen}>Настройки профиля</MenuItem>
-                                        <Modal isOpen={isOpen} onClose={onClose} size='xl' isCentered>
-                                            <ModalOverlay />
-                                            <ModalContent>
-                                                <ModalHeader textAlign='center'><Text fontSize='xl' fontWeight='bold'>Быстрая настройка профиля</Text></ModalHeader>
-                                                <ModalCloseButton />
-                                                <ModalBody display='flex' flexDirection='column' alignItems='center'>
-                                                    <Formik
-                                                        //display='flex' flexDirection='column' alignItems='center'
-                                                        initialValues={{ usernameOrEmail: '', password: '' }}
-                                                        onSubmit={async (values, { setErrors }) => {
-
-                                                        }}>
-                                                        {({ isSubmitting }) => (
-                                                            <Form>
-                                                                <Flex flexDirection='column' alignItems='center'>
-                                                                    <Box w='200px' h='200px' overflow='hidden' borderRadius='50%'>
-                                                                        <Image w='100%' h='100%' objectFit='cover' src={`https://bit.ly/sage-adebayo`} />
-                                                                    </Box>
-                                                                    <FormikControl
-                                                                        control='input'
-                                                                        name='usernameOrEmail'
-                                                                        placeholder='Логин или E-mail'
-                                                                        label='Логин'
-                                                                    />
-                                                                    <Box mt={5}></Box>
-                                                                    <FormikControl
-                                                                        control='input'
-                                                                        name='password'
-                                                                        placeholder='Пароль'
-                                                                        label='Пароль'
-                                                                    />
-                                                                    <Button colorScheme='gray' mt={5} w="100%" maxW='300px' isLoading={isSubmitting} type='submit'>Редактировать</Button>
-                                                                </Flex>
-
-
-                                                            </Form>
-                                                        )}
-                                                    </Formik>
-
-                                                    <Button colorScheme='teal' mt={5} w="100%" maxW='300px' type='submit'>Посмотреть полные данные</Button>
-
-
-                                                </ModalBody>
-                                            </ModalContent>
-                                        </Modal>
-                                        <NextLink href='/own-room'>
-                                            <MenuItem>Личный кабинет</MenuItem>
+                                        <NextLink href='/profile'>
+                                            <MenuItem>Аккаунт</MenuItem>
                                         </NextLink>
                                     </MenuGroup>
                                 )}

@@ -20,6 +20,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HouseResolver = void 0;
 const graphql_upload_1 = require("graphql-upload");
@@ -30,9 +33,10 @@ const House_1 = require("../entities/House");
 const Review_1 = require("../entities/Review");
 const isAuth_1 = require("./../utils/middleware/isAuth");
 const ErrorFields_1 = require("./types/ErrorFields");
-const fs_1 = require("fs");
 const processImage_1 = require("./../utils/processImage");
 const deleteHouseImages_1 = require("./../utils/deleteHouseImages");
+const Booking_1 = require("../entities/Booking");
+const moment_1 = __importDefault(require("moment"));
 let ReviewInput = class ReviewInput {
 };
 __decorate([
@@ -63,6 +67,63 @@ __decorate([
 HouseResponse = __decorate([
     type_graphql_1.ObjectType()
 ], HouseResponse);
+let SearchInput = class SearchInput {
+};
+__decorate([
+    type_graphql_1.Field({ nullable: true }),
+    __metadata("design:type", String)
+], SearchInput.prototype, "country", void 0);
+__decorate([
+    type_graphql_1.Field({ nullable: true }),
+    __metadata("design:type", String)
+], SearchInput.prototype, "street", void 0);
+__decorate([
+    type_graphql_1.Field({ nullable: true }),
+    __metadata("design:type", String)
+], SearchInput.prototype, "city", void 0);
+__decorate([
+    type_graphql_1.Field({ nullable: true }),
+    __metadata("design:type", String)
+], SearchInput.prototype, "state", void 0);
+__decorate([
+    type_graphql_1.Field({ nullable: true }),
+    __metadata("design:type", String)
+], SearchInput.prototype, "apartment", void 0);
+__decorate([
+    type_graphql_1.Field({ nullable: true }),
+    __metadata("design:type", Number)
+], SearchInput.prototype, "bed_count", void 0);
+__decorate([
+    type_graphql_1.Field({ nullable: true }),
+    __metadata("design:type", Number)
+], SearchInput.prototype, "guests_count", void 0);
+__decorate([
+    type_graphql_1.Field({ nullable: true }),
+    __metadata("design:type", Boolean)
+], SearchInput.prototype, "startDate", void 0);
+__decorate([
+    type_graphql_1.Field({ nullable: true }),
+    __metadata("design:type", String)
+], SearchInput.prototype, "endDate", void 0);
+__decorate([
+    type_graphql_1.Field({ nullable: true }),
+    __metadata("design:type", Number)
+], SearchInput.prototype, "price", void 0);
+__decorate([
+    type_graphql_1.Field({ nullable: true }),
+    __metadata("design:type", Number)
+], SearchInput.prototype, "lat", void 0);
+__decorate([
+    type_graphql_1.Field({ nullable: true }),
+    __metadata("design:type", Number)
+], SearchInput.prototype, "lng", void 0);
+__decorate([
+    type_graphql_1.Field({ nullable: true }),
+    __metadata("design:type", Number)
+], SearchInput.prototype, "rating", void 0);
+SearchInput = __decorate([
+    type_graphql_1.InputType()
+], SearchInput);
 let HouseInput = class HouseInput {
 };
 __decorate([
@@ -222,6 +283,152 @@ let HouseResolver = class HouseResolver {
             return review.length;
         });
     }
+    searchListings({ guests_count, city, country, street, state }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let listing = typeorm_1.getConnection()
+                .getRepository(House_1.House)
+                .createQueryBuilder('h');
+            let step1 = null;
+            if (city && state && street && country && guests_count) {
+                step1 = yield House_1.House.find({ where: { city, state, street, country, guests_count: typeorm_1.MoreThanOrEqual(guests_count) } });
+            }
+            let step2 = null;
+            if (city && state && street && guests_count) {
+                step2 = yield House_1.House.find({ where: { city, state, street, guests_count: typeorm_1.MoreThanOrEqual(guests_count) } });
+            }
+            let step3 = null;
+            if (city && state && guests_count) {
+                step3 = yield House_1.House.find({ where: { city, state, guests_count: typeorm_1.MoreThanOrEqual(guests_count) } });
+            }
+            let step4 = null;
+            if (street && state && guests_count) {
+                step4 = yield House_1.House.find({ where: { street, state, guests_count: typeorm_1.MoreThanOrEqual(guests_count) } });
+            }
+            let step5 = null;
+            if (state && guests_count) {
+                step5 = yield House_1.House.find({ where: { state, guests_count: typeorm_1.MoreThanOrEqual(guests_count) } });
+            }
+            let step6 = null;
+            if (street && guests_count) {
+                step6 = yield House_1.House.find({ where: { street, guests_count: typeorm_1.MoreThanOrEqual(guests_count) } });
+            }
+            let step7 = null;
+            if (city && guests_count) {
+                step7 = yield House_1.House.find({ where: { city, guests_count: typeorm_1.MoreThanOrEqual(guests_count) } });
+            }
+            let step8 = null;
+            if (country && guests_count) {
+                step8 = yield House_1.House.find({ where: { country, guests_count: typeorm_1.MoreThanOrEqual(guests_count) } });
+            }
+            if (step1 === null || step1 === void 0 ? void 0 : step1.length) {
+                return step1;
+            }
+            if (step2 === null || step2 === void 0 ? void 0 : step2.length) {
+                return step2;
+            }
+            if (step3 === null || step3 === void 0 ? void 0 : step3.length) {
+                return step3;
+            }
+            if (step4 === null || step4 === void 0 ? void 0 : step4.length) {
+                return step4;
+            }
+            if (step5 === null || step5 === void 0 ? void 0 : step5.length) {
+                return step5;
+            }
+            if (step6 === null || step6 === void 0 ? void 0 : step6.length) {
+                return step6;
+            }
+            if (step7 === null || step7 === void 0 ? void 0 : step7.length) {
+                return step7;
+            }
+            if (step8 === null || step8 === void 0 ? void 0 : step8.length) {
+                return step8;
+            }
+            return undefined;
+        });
+    }
+    getCustomerBookings({ req }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const qb = typeorm_1.getConnection()
+                .getRepository(Booking_1.Booking)
+                .createQueryBuilder('b')
+                .innerJoinAndSelect("b.user", "u", "u.id = b.userId")
+                .innerJoinAndSelect("b.house", "h", "h.id = b.houseId")
+                .orderBy('h.createdAt', 'DESC')
+                .where('b.userId = :userId', { userId: req.session.userId })
+                .getMany();
+            return yield qb;
+        });
+    }
+    getAdminBookings({ req }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const adminHouses = yield House_1.House.find({ userId: req.session.userId });
+            if (!adminHouses.length) {
+                return undefined;
+            }
+            const houseIds = adminHouses.map(el => {
+                return el.id;
+            });
+            if (!houseIds.length) {
+                return undefined;
+            }
+            const bookingList = typeorm_1.getConnection()
+                .getRepository(Booking_1.Booking)
+                .createQueryBuilder('b')
+                .innerJoinAndSelect("b.user", "u", "u.id = b.userId")
+                .innerJoinAndSelect("b.house", "h", "h.id = b.houseId")
+                .orderBy('h.createdAt', 'DESC')
+                .where(`houseId IN(${houseIds})`)
+                .andWhere(`status != 'завершен'`)
+                .getMany();
+            return yield bookingList;
+        });
+    }
+    getBookings(houseId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const disabledDates = yield Booking_1.Booking.find({ houseId, status: typeorm_1.Not('завершен') });
+            let tempDates = [];
+            disabledDates.forEach(el => {
+                let fromDate = moment_1.default(el.startDate);
+                let toDate = moment_1.default(el.endDate);
+                while (fromDate <= toDate) {
+                    let ld = fromDate.format('DD-MM-YY');
+                    tempDates.push(ld);
+                    fromDate = moment_1.default(fromDate).add(1, 'days');
+                }
+            });
+            return tempDates;
+        });
+    }
+    doBooking(startDate, endDate, guests_count, houseId, { req }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield Booking_1.Booking.insert({
+                    startDate: new Date(parseInt(startDate)),
+                    endDate: new Date(parseInt(endDate)),
+                    guests_count,
+                    userId: req.session.userId,
+                    houseId,
+                    status: 'в ожидании'
+                });
+            }
+            catch (_a) {
+                return [];
+            }
+            const disabledDates = yield Booking_1.Booking.find({ houseId });
+            let tempDates = [];
+            disabledDates.forEach(el => {
+                let fromDate = moment_1.default(el.startDate);
+                let toDate = moment_1.default(el.endDate);
+                while (fromDate <= toDate) {
+                    let ld = fromDate.format('DD-MM-YY');
+                    tempDates.push(ld);
+                    fromDate = moment_1.default(fromDate).add(1, 'days');
+                }
+            });
+            return tempDates;
+        });
+    }
     createHouse(input, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
             let house;
@@ -241,16 +448,6 @@ let HouseResolver = class HouseResolver {
             return { house };
         });
     }
-    addHousePicture({ createReadStream, filename }) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((res, rej) => {
-                createReadStream()
-                    .pipe(fs_1.createWriteStream(`${__dirname}/../images/${filename}`, { autoClose: true }))
-                    .on("finish", () => res(true))
-                    .on("error", () => rej(false));
-            });
-        });
-    }
     leaveReview(options, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
             const { userId } = req.session;
@@ -265,7 +462,7 @@ let HouseResolver = class HouseResolver {
             return true;
         });
     }
-    houses(limit, cursor) {
+    houses(limit, cursor, housesById, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
             const realLimit = Math.min(50, limit);
             const realLimitPlusOne = realLimit + 1;
@@ -280,6 +477,9 @@ let HouseResolver = class HouseResolver {
             if (cursor) {
                 qb.where('h.createdAt < :cursor', { cursor: new Date(parseInt(cursor)) });
             }
+            if (housesById) {
+                qb.where('h.userId = :userId', { userId: req.session.userId });
+            }
             const houses = yield qb.getMany();
             return { houses: houses.slice(0, realLimit), hasMore: houses.length === realLimitPlusOne };
         });
@@ -289,9 +489,9 @@ let HouseResolver = class HouseResolver {
             return yield House_1.House.findOne(id, { relations: ['user', 'room_type', 'house_type'] });
         });
     }
-    updateHouse(id, title, { req }) {
+    updateHouse(id, title, description, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield House_1.House.update({ id, userId: req.session.userId }, { title });
+            yield House_1.House.update({ id, userId: req.session.userId }, { title, description });
             return yield House_1.House.findOne({ id, userId: req.session.userId });
         });
     }
@@ -301,11 +501,36 @@ let HouseResolver = class HouseResolver {
                 const [{ pictureUrl }] = yield House_1.House.find({ id });
                 yield House_1.House.delete({ id, userId: req.session.userId });
                 yield deleteHouseImages_1.deleteHouseImages(pictureUrl, req.session.userId);
-                return true;
             }
             catch (_a) {
                 return false;
             }
+            return true;
+        });
+    }
+    deleteBooking(id, { req }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield Booking_1.Booking.delete({ userId: req.session.userId, id });
+            }
+            catch (_a) {
+                return false;
+            }
+            return true;
+        });
+    }
+    changeBookingStatus(id, active, finished) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (active) {
+                yield Booking_1.Booking.update({ id }, { status: 'активирован' });
+            }
+            else if (finished) {
+                yield Booking_1.Booking.update({ id }, { status: 'завершен' });
+            }
+            else {
+                return false;
+            }
+            return true;
         });
     }
 };
@@ -333,6 +558,46 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], HouseResolver.prototype, "reviewCount", null);
 __decorate([
+    type_graphql_1.Query(() => [House_1.House], { nullable: true }),
+    __param(0, type_graphql_1.Arg('input')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [SearchInput]),
+    __metadata("design:returntype", Promise)
+], HouseResolver.prototype, "searchListings", null);
+__decorate([
+    type_graphql_1.Query(() => [Booking_1.Booking], { nullable: true }),
+    __param(0, type_graphql_1.Ctx()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], HouseResolver.prototype, "getCustomerBookings", null);
+__decorate([
+    type_graphql_1.Query(() => [Booking_1.Booking], { nullable: true }),
+    __param(0, type_graphql_1.Ctx()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], HouseResolver.prototype, "getAdminBookings", null);
+__decorate([
+    type_graphql_1.Query(() => [String]),
+    __param(0, type_graphql_1.Arg('houseId', () => type_graphql_1.Int)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], HouseResolver.prototype, "getBookings", null);
+__decorate([
+    type_graphql_1.Mutation(() => [String]),
+    type_graphql_1.UseMiddleware(isAuth_1.isAuth),
+    __param(0, type_graphql_1.Arg('startDate', () => String)),
+    __param(1, type_graphql_1.Arg('endDate', () => String)),
+    __param(2, type_graphql_1.Arg('guests_count', () => type_graphql_1.Int)),
+    __param(3, type_graphql_1.Arg('houseId', () => type_graphql_1.Int)),
+    __param(4, type_graphql_1.Ctx()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Number, Number, Object]),
+    __metadata("design:returntype", Promise)
+], HouseResolver.prototype, "doBooking", null);
+__decorate([
     type_graphql_1.Mutation(() => HouseResponse),
     type_graphql_1.UseMiddleware(isAuth_1.isAuth),
     __param(0, type_graphql_1.Arg('input')),
@@ -341,13 +606,6 @@ __decorate([
     __metadata("design:paramtypes", [HouseInput, Object]),
     __metadata("design:returntype", Promise)
 ], HouseResolver.prototype, "createHouse", null);
-__decorate([
-    type_graphql_1.Mutation(() => Boolean),
-    __param(0, type_graphql_1.Arg('picture', () => graphql_upload_1.GraphQLUpload)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], HouseResolver.prototype, "addHousePicture", null);
 __decorate([
     type_graphql_1.Mutation(() => Boolean),
     type_graphql_1.UseMiddleware(isAuth_1.isAuth),
@@ -361,8 +619,10 @@ __decorate([
     type_graphql_1.Query(() => PaginatedHouses),
     __param(0, type_graphql_1.Arg('limit', () => type_graphql_1.Int)),
     __param(1, type_graphql_1.Arg('cursor', () => String, { nullable: true })),
+    __param(2, type_graphql_1.Arg('housesById', () => Boolean, { nullable: true })),
+    __param(3, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:paramtypes", [Number, Object, Boolean, Object]),
     __metadata("design:returntype", Promise)
 ], HouseResolver.prototype, "houses", null);
 __decorate([
@@ -377,9 +637,10 @@ __decorate([
     type_graphql_1.UseMiddleware(isAuth_1.isAuth),
     __param(0, type_graphql_1.Arg('id', () => type_graphql_1.Int)),
     __param(1, type_graphql_1.Arg('title')),
-    __param(2, type_graphql_1.Ctx()),
+    __param(2, type_graphql_1.Arg('description')),
+    __param(3, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, String, Object]),
+    __metadata("design:paramtypes", [Number, String, String, Object]),
     __metadata("design:returntype", Promise)
 ], HouseResolver.prototype, "updateHouse", null);
 __decorate([
@@ -391,6 +652,25 @@ __decorate([
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], HouseResolver.prototype, "deleteHouse", null);
+__decorate([
+    type_graphql_1.Mutation(() => Boolean),
+    type_graphql_1.UseMiddleware(isAuth_1.isAuth),
+    __param(0, type_graphql_1.Arg('id', () => type_graphql_1.Int)),
+    __param(1, type_graphql_1.Ctx()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", Promise)
+], HouseResolver.prototype, "deleteBooking", null);
+__decorate([
+    type_graphql_1.Mutation(() => Boolean),
+    type_graphql_1.UseMiddleware(isAuth_1.isAuth),
+    __param(0, type_graphql_1.Arg('id', () => type_graphql_1.Int)),
+    __param(1, type_graphql_1.Arg('active', () => type_graphql_1.Int, { nullable: true })),
+    __param(2, type_graphql_1.Arg('finished', () => type_graphql_1.Int, { nullable: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Number, Number]),
+    __metadata("design:returntype", Promise)
+], HouseResolver.prototype, "changeBookingStatus", null);
 HouseResolver = __decorate([
     type_graphql_1.Resolver(House_1.House)
 ], HouseResolver);

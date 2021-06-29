@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import FormikControl from '../../../components/FormikControl';
 import InputFieldProps from '../../../components/InputFieldProps';
+import DropZoneField from '../../../components/inputs/DropZoneField';
 import Layout from '../../../components/Layout';
 import Wrapper from '../../../components/Wrapper';
 import { useHouseQuery, useUpdateHouseMutation } from '../../../generated/graphql';
@@ -45,6 +46,8 @@ const EditHouse: React.FC = ({ }) => {
                     <Formik
                         initialValues={{
                             title: data.house?.title,
+                            description: data.house.description,
+                            file: null
                         }}
                         onSubmit={async (values, { setErrors }) => {
                             try {
@@ -54,15 +57,31 @@ const EditHouse: React.FC = ({ }) => {
                                 setErrors(error);
                             }
                         }}>
-                        {({ isSubmitting }) => (
+                        {({ isSubmitting, setFieldValue }) => (
                             <Form>
                                 <Flex flexDirection='column'>
+                                    {/* <DropZoneField
+                                        name='file'
+                                        setFieldValue={setFieldValue}
+                                        label='Оживите объявление с помощью фото'
+                                        description='Снимайте телефоном или фотоаппаратом. Для публикации объявления нужно хотя бы одно фото. Перетаскивая изображения, расставьте их в нужном порядке. Отредактировать фото или добавить новые можно позже.'
+                                    /> */}
                                     <FormikControl
                                         control='input'
                                         smallSize={true}
                                         name='title'
                                         placeholder='Название'
-                                        label='Название дома'
+                                        label='Название жилья'
+                                    />
+                                </Flex>
+                                <Flex flexDirection='column'>
+                                    <FormikControl
+                                        control='input'
+                                        smallSize={true}
+                                        name='description'
+                                        placeholder='Описание жилья'
+                                        label='Описание'
+                                        textarea
                                     />
                                 </Flex>
                                 <Button colorScheme='teal' mt={5} w="100%" isLoading={isSubmitting} type='submit'>Сохранить</Button>

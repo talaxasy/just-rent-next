@@ -2,6 +2,10 @@ button{
   outline: none;
 }
 
+html, body{
+  height: 100%;
+}
+
 input{
   outline: none;
 }
@@ -100,5 +104,12 @@ button:focus{
 .DateRangePickerInput__withBorder{
 border-radius: 0.375rem;
 overflow: hidden;
+}
+
+.profile_card{
+  box-shadow: 0 2px 8px rgb(0 0 0 / 16%);
+  padding: 30px 20px;
+  margin: 20px 0;
+  border-radius: 8px;
 }
 

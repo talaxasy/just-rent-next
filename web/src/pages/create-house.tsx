@@ -136,8 +136,8 @@ const CreateHouse: React.FC = ({ }) => {
     });
 
     const validationSchema = Yup.object({
-        // amenities: Yup.array().min(1, 'Должно быть минимум одно удобство'),
-        // title: Yup.string().min(5, 'Динна названия должно быть минимум 5 симоволов').required('Это поле обязательно'),
+        amenities: Yup.array().min(1, 'Должно быть минимум одно удобство'),
+        title: Yup.string().min(5, 'Динна названия должно быть минимум 5 симоволов').required('Это поле обязательно'),
     });
 
 
@@ -195,6 +195,7 @@ const CreateHouse: React.FC = ({ }) => {
                             if (values.file?.length === 0) {
                                 values.file = null;
                             }
+                            values.price = parseInt('' + values.price, 10) ? parseInt('' + values.price, 10) : 1;
 
                             const resp = await createHouse({
                                 variables: { input: values },
@@ -214,7 +215,7 @@ const CreateHouse: React.FC = ({ }) => {
                             console.log(values);
                         }}>
                         {({ isSubmitting, values, setFieldValue, setValues }) => (
-                            <Form style={{ position: 'relative' }}>
+                            <Form style={{ position: 'relative', marginBottom: '30px' }}>
                                 <Flex flexDirection='column'>
                                     <Flex>
                                         <FormikControl
@@ -333,16 +334,75 @@ const CreateHouse: React.FC = ({ }) => {
                                             mapElement={<div style={{ height: `100%` }} />}
                                             defaultCenter={defaultCenterForeign}
                                             markerPosition={{ lat: values.latitude, lng: values.longitude }}
-                                            onClick={x => {
+                                            onClick={async (x) => {
                                                 const lat = x.latLng?.lat();
                                                 const lng = x.latLng?.lng();
 
+                                                let country = '';
+                                                let city = '';
+                                                let state = '';
+                                                let street = '';
+                                                let apartment = '';
+
                                                 if (lat && lng) {
+
+                                                    // let placeFromLarLng: any = null;
+                                                    let geocoder = new google.maps.Geocoder();
+                                                    const placeFrom = await geocoder.geocode({
+                                                        location: new google.maps.LatLng(lat, lng)
+                                                    }, function (results, status) {
+                                                        if (status == google.maps.GeocoderStatus.OK && results) {
+                                                            return results;
+                                                        }
+                                                    });
+
+                                                    let placeFromLarLng = placeFrom?.results[0];
+
+
+                                                    if (placeFromLarLng) {
+                                                        for (let i = 0; i < placeFromLarLng.address_components.length; i++) {
+                                                            for (let j = 0; j < placeFromLarLng.address_components[i].types.length; j++) {
+                                                                if (placeFromLarLng.address_components[i].types[j] == "country")
+                                                                    country = placeFromLarLng.address_components[i].long_name
+                                                            }
+                                                        }
+                                                        for (let i = 0; i < placeFromLarLng.address_components.length; i++) {
+                                                            for (let j = 0; j < placeFromLarLng.address_components[i].types.length; j++) {
+                                                                if (placeFromLarLng.address_components[i].types[j] == "locality")
+                                                                    city = placeFromLarLng.address_components[i].long_name
+                                                            }
+                                                        }
+                                                        for (let i = 0; i < placeFromLarLng.address_components.length; i++) {
+                                                            for (let j = 0; j < placeFromLarLng.address_components[i].types.length; j++) {
+                                                                if (placeFromLarLng.address_components[i].types[j] == ('sublocality_level_1' || 'sublocality' || 'administrative_area_level_1'))
+                                                                    state = placeFromLarLng.address_components[i].long_name
+                                                            }
+                                                        }
+                                                        for (let i = 0; i < placeFromLarLng.address_components.length; i++) {
+                                                            for (let j = 0; j < placeFromLarLng.address_components[i].types.length; j++) {
+                                                                if (placeFromLarLng.address_components[i].types[j] == "route")
+                                                                    street = placeFromLarLng.address_components[i].long_name
+                                                            }
+                                                        }
+                                                        for (let i = 0; i < placeFromLarLng.address_components.length; i++) {
+                                                            for (let j = 0; j < placeFromLarLng.address_components[i].types.length; j++) {
+                                                                if (placeFromLarLng.address_components[i].types[j] == "street_number")
+                                                                    apartment = placeFromLarLng.address_components[i].long_name
+                                                            }
+                                                        }
+                                                    }
+
+
                                                     setValues({
                                                         ...values,
                                                         longitude: lng,
                                                         latitude: lat,
+                                                        street
                                                     });
+                                                    setFieldValue('country', country);
+                                                    setFieldValue('city', city);
+                                                    setFieldValue('state', state);
+                                                    setFieldValue('apartment', apartment);
                                                 }
                                             }}
                                         />
@@ -527,8 +587,22 @@ const CreateHouse: React.FC = ({ }) => {
                                             label="Напомнить об удобствах для людей с особыми потребностями"
                                         />
                                     </Flex>
+                                    <Divider my={10} />
+                                    <Flex flexDir='column'>
+                                        <Text fontSize='xl' fontWeight='bold' mb='10px'>Оцените свое жилье</Text>
+                                        <Text fontSize='lg' mb='10px'>Установить базовую цену для каждой ночи</Text>
+                                        <Text fontSize='md' opacity='.8' mb='20px'>К цене, установленной хозяином, добавляется 14% сбора за услуги, но иногда его сумма зависит от продолжительности поездки.</Text>
+                                        <FormikControl
+                                            control='input'
+                                            name='price'
+                                            label='Базовая цена'
+                                            description='Это ваша цена по умолчанию.'
+                                            sightInput={true}
+                                            maxW='250px'
+                                        />
+                                    </Flex>
                                 </Flex>
-                                <Button colorScheme='teal' mt={5} w="100%" isLoading={isSubmitting} type='submit'>Добавить</Button>
+                                <Button colorScheme='teal' maxWidth='300px' mt='40px' mx='auto' w="100%" h='50px' fontSize='xl' isLoading={isSubmitting} type='submit'>Добавить</Button>
                                 {/* <pre style={{ userSelect: 'none', position: 'fixed', top: 0, right: 0, fontSize: '12px' }}>
                                     {JSON.stringify(values, null, 2)}
                                 </pre> */}

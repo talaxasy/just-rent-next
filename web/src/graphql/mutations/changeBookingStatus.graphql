@@ -1,0 +1,3 @@
+mutation ChangeBookingStatus($id: Int!, $active: Int, $finished: Int) {
+  changeBookingStatus(id: $id, active: $active, finished: $finished)
+}

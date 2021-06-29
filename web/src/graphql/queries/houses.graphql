@@ -1,5 +1,5 @@
-query Houses($limit: Int!, $cursor: String) {
-  houses(limit: $limit, cursor: $cursor) {
+query Houses($limit: Int!, $cursor: String, $housesById: Boolean) {
+  houses(limit: $limit, cursor: $cursor, housesById: $housesById) {
     hasMore
     houses {
       id

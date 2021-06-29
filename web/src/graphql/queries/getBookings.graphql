@@ -1,0 +1,3 @@
+query GetBookings($houseId: Int!) {
+  getBookings(houseId: $houseId)
+}

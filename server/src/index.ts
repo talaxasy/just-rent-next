@@ -31,6 +31,7 @@ import { DefaultRules } from './entities/DefaultRules';
 import dayjs from 'dayjs';
 import { createReviewCountLoader } from './utils/createReviewCountLoader';
 import { createUserLoader } from './utils/createUserLoader';
+import { Booking } from './entities/Booking';
 
 
 
@@ -54,7 +55,8 @@ const main = async () => {
             RoomType,
             DefaultAmenities,
             DefaultRules,
-            SafetyAmeneties
+            SafetyAmeneties,
+            Booking
         ]
     });
 

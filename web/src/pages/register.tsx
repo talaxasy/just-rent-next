@@ -45,7 +45,7 @@ const Register: React.FC<registerProps> = ({ }) => {
                             if (resp.data?.register.errors) {
                                 setErrors(toErrorMap(resp.data.register.errors));
                             } else if (resp.data?.register.user) {
-                                router.back();
+                                router.push('/profile');
                             }
                         }}>
                         {({ isSubmitting }) => (

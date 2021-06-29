@@ -38,6 +38,7 @@ const SafetyAmeneties_1 = require("./entities/SafetyAmeneties");
 const DefaultRules_1 = require("./entities/DefaultRules");
 const createReviewCountLoader_1 = require("./utils/createReviewCountLoader");
 const createUserLoader_1 = require("./utils/createUserLoader");
+const Booking_1 = require("./entities/Booking");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const conn = yield typeorm_1.createConnection({
         type: "mysql",
@@ -57,7 +58,8 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             RoomType_1.RoomType,
             DefaultAmenities_1.DefaultAmenities,
             DefaultRules_1.DefaultRules,
-            SafetyAmeneties_1.SafetyAmeneties
+            SafetyAmeneties_1.SafetyAmeneties,
+            Booking_1.Booking
         ]
     });
     const app = express_1.default();

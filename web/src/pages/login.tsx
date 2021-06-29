@@ -50,7 +50,7 @@ const Login: React.FC<registerProps> = ({ }) => {
                                 if (typeof router.query.next === 'string') {
                                     router.push(router.query.next);
                                 } else {
-                                    router.back();
+                                    router.push('/profile');
                                 }
                             }
                         }}>

@@ -1,7 +1,7 @@
 import { Input } from '@chakra-ui/input';
 import { Box } from '@chakra-ui/layout';
 import { FastField, FieldProps } from 'formik';
-import React from 'react'
+import React, { useRef } from 'react'
 import Geosuggest, { Suggest } from 'react-geosuggest';
 
 import { Flex, FormControl, FormControlProps, FormErrorMessage, FormLabel } from '@chakra-ui/react';
@@ -9,9 +9,6 @@ import { Flex, FormControl, FormControlProps, FormErrorMessage, FormLabel } from
 
 
 // lat: -34.397, lng: 150.644
-
-
-
 
 interface State {
     defaultCenter: DefaultCenter | null
@@ -90,6 +87,8 @@ class SearchInput extends React.PureComponent<LocationFieldProps> {
 
 
         }
+
+
     }
 
     render() {
@@ -102,6 +101,9 @@ class SearchInput extends React.PureComponent<LocationFieldProps> {
                     as={Geosuggest}
                     onSuggestSelect={this.onSuggestSelect}
                     {...rest}
+                    onChange={(e) => {
+
+                    }}
                 />
             </FormControl>
         );

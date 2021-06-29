@@ -1,5 +1,6 @@
+import { isAuth } from './../utils/middleware/isAuth';
 import argon2 from 'argon2';
-import { Arg, Ctx, Field, FieldResolver, Mutation, ObjectType, Query, Resolver, Root } from "type-graphql";
+import { Arg, Ctx, Field, FieldResolver, Mutation, ObjectType, Query, Resolver, Root, UseMiddleware } from "type-graphql";
 import { v4 } from 'uuid';
 import { User } from '../entities/User';
 import { MyContext } from "../types";
@@ -90,6 +91,30 @@ export class UserResolver {
         return { user };
     }
 
+    @Mutation(() => User, { nullable: true })
+    @UseMiddleware(isAuth)
+    async updateUser(
+        @Arg('phone', () => String) phone: string,
+        @Arg('description', () => String) description: string,
+        @Arg('secondName', () => String) secondName: string,
+        @Arg('firstName', () => String) firstName: string,
+        @Ctx() { req }: MyContext
+    ): Promise<User | undefined> {
+
+        await User.update({ id: req.session.userId }, { phone, description, firstName, secondName });
+        return await User.findOne({ id: req.session.userId });
+
+        // await getConnection()
+        //     .createQueryBuilder()
+        //     .update(House)
+        //     .set({
+        //         title,
+        //     })
+        //     .where('id = :id and userId = :userId', { id, userId: req.session.userId })
+        //     .execute();
+        // return result as any;
+    }
+
 
     // Forgot the password
     @Mutation(() => Boolean)
@@ -122,7 +147,7 @@ export class UserResolver {
 
     // Coockie passing
     @Query(() => User, { nullable: true })
-    me(
+    async me(
         @Ctx() { req }: MyContext
     ) {
 
@@ -131,7 +156,7 @@ export class UserResolver {
             return null;
         }
 
-        return User.findOne(req.session.userId);
+        return await User.findOne(req.session.userId);
     }
 
     // REGISTER

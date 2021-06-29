@@ -27,7 +27,7 @@ const Wrapper: React.FC<WrapperProps> = ({ children, variant = 'large' }) => {
     }
 
     return (
-        <Box mx='auto' maxW={mx} w='100%'>
+        <Box mx='auto' maxW={mx} w='100%' px={variant !== 'infinite' ? 4 : undefined}>
             {children}
         </Box>
     );

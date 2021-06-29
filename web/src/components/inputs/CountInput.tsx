@@ -3,7 +3,7 @@ import { FastField, Field, useField } from 'formik';
 import React from 'react';
 import { TextInputProps } from './TextInput';
 
-const CountInput: React.FC<TextInputProps> = ({ name, label, description, preLabel, placeholder, ...rest }) => {
+const CountInput: React.FC<TextInputProps & { max?: number; min?: number }> = ({ name, label, description, preLabel, placeholder, max, min, ...rest }) => {
     // const [field, { error, touched }] = useField(name);
     // const {
     //     getInputProps,
@@ -37,8 +37,8 @@ const CountInput: React.FC<TextInputProps> = ({ name, label, description, preLab
                                 form.setFieldValue(field.name, parseInt(val, 10))
                             }
                             {...rest}
-                            max={10}
-                            min={1}
+                            max={max ? max : 10}
+                            min={min ? min : 1}
                         >
                             <NumberInputField placeholder={placeholder} />
                             <NumberInputStepper>
@@ -49,8 +49,9 @@ const CountInput: React.FC<TextInputProps> = ({ name, label, description, preLab
                         <FormErrorMessage>{form.errors[name]}</FormErrorMessage>
                     </Box>
                 </FormControl>
-            )}
-        </FastField>
+            )
+            }
+        </FastField >
         // <Field name={name}>
         //     {({ form }: any) => {
         //         return (
