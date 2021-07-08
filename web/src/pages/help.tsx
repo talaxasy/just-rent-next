@@ -27,8 +27,10 @@ const Help: React.FC<registerProps> = ({ }) => {
                             <Flex flexDirection='column' w='50%' justifyContent='center' alignItems='center'>
                                 <Heading fontSize='24px'>Как правильно размещать жильё?</Heading>
                                 <Text>
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga necessitatibus magni alias delectus quidem, cumque inventore eaque corporis ex nobis. Rem amet magnam laborum ut reiciendis eos nemo molestiae blanditiis exercitationem quisquam, fuga vero sed consequuntur quidem perspiciatis voluptatem consectetur laudantium non? Corrupti magni aut fugit repudiandae provident aperiam dignissimos.
-                        </Text>
+                                    Важно изначально выбрать правильную планировку квартиры, учитывая объёмно-пространственные габариты, компоновку и комбинаторику помещений. Если говорить кратко, то объёмно-пространственные габариты квартиры — это когда площадь коридора, холла и прихожей составляет не более 20% общей квадратуры, а размеры комнат по ширине — не менее 3,5 метра.
+
+                                    Мало кто задумывается о планировании пространства перед покупкой жилья, думая, что всё можно перекроить позже. Потом перед дизайнером ставится подчас невыполнимая задача, например перенести «мокрую зону» на жилую или увеличить количество спален за счёт помещений без окон.
+                                </Text>
                             </Flex>
 
                         </Flex>
@@ -39,8 +41,8 @@ const Help: React.FC<registerProps> = ({ }) => {
                             <Flex flexDirection='column' w='50%' justifyContent='center' alignItems='center'>
                                 <Heading fontSize='24px'>Критерии продвижения жилья</Heading>
                                 <Text>
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur, voluptas debitis? Rerum doloribus harum magni cupiditate est. Nam id laboriosam quisquam rerum laborum voluptatum repellat iusto facere ipsum blanditiis fugiat, est cupiditate inventore? Beatae a temporibus assumenda veniam suscipit dolorum tempore vitae impedit. Quos, corrupti rem itaque nesciunt possimus beatae obcaecati asperiores facilis pariatur quia eveniet ex error molestiae vitae dolores adipisci officiis recusandae. Cupiditate, dolorem optio. Accusamus sapiente doloribus aut. Molestias maiores neque et ex perferendis dolor quos adipisci hic minima suscipit. Nostrum maxime accusantium, debitis id natus illo deleniti non modi ad! Sit voluptates placeat cupiditate soluta nostrum.
-                        </Text>
+                                    Маркетинговые отделы строительных компаний часто не имеют четкой стратегии продвижения, и потому у них нет возможности оптимизировать затраты без потери эффективности. В такой ситуации для застройщика оптимальным решением является обращение в комплексное маркетинговое агентство, которое поможет выстроить и реализовать пошаговый индивидуальный план достижения девелопером своих бизнес-целей.
+                                </Text>
                             </Flex>
 
                         </Flex>

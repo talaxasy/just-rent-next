@@ -58,7 +58,7 @@ const OwnRoom: React.FC<registerProps> = ({ }) => {
                             <NextLink href='/profile/bookings'>
                                 <Box width='33.33333333333333%' p='10px' cursor='pointer'>
                                     <Flex flexDir='column' height='auto' className='profile_card'>
-                                        <Text mb='10px' fontSize='2xl'>🔥</Text>
+                                        <Text mb='10px' fontSize='2xl'>✔️</Text>
                                         <Text fontSize='2xl' fontWeight='bold'>Бронирование</Text>
                                         <Text>Список существующих бронирований и история бронирований</Text>
                                     </Flex>

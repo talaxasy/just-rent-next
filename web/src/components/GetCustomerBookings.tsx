@@ -8,15 +8,17 @@ import { CloseIcon, EditIcon } from '@chakra-ui/icons';
 interface GetCustomerBookingsProps {
     getCustomerBookings: GetCustomerBookingsQuery | undefined;
     meData: MeQuery | undefined;
+    finished?: boolean;
 }
 
-const GetCustomerBookings: React.FC<GetCustomerBookingsProps> = ({ getCustomerBookings, meData }) => {
+const GetCustomerBookings: React.FC<GetCustomerBookingsProps> = ({ getCustomerBookings, meData, finished }) => {
     function datediff(first: moment.Moment, second: moment.Moment) {
         return Math.round((parseInt('' + second, 10) - parseInt('' + first, 10)) / (1000 * 60 * 60 * 24));
     }
     const [deleteBooking] = useDeleteBookingMutation();
     return (
         <VStack w='100%'
+            filter={finished ? 'grayscale(1)' : undefined}
             divider={<StackDivider borderColor="gray.200" />}
             spacing={4}
             align="stretch"
@@ -40,20 +42,20 @@ const GetCustomerBookings: React.FC<GetCustomerBookingsProps> = ({ getCustomerBo
                                 {el.house.apartment !== '' && el.house.apartment}
                             </Text>
                         </Box>
-                        <Divider orientation="vertical" opacity='.2' width='2px' bg='#333333' mx={5} />
+                        <Divider h='auto' orientation="vertical" opacity='.2' width='2px' bg='#333333' mx={5} />
                         <Flex w='350px'>
 
                             <Box fontSize='18px'>
                                 <Text>Бронь: с {moment(el.startDate, 'x').format('DD.MM.YY')} по {moment(el.endDate, 'x').format('DD.MM.YY')}</Text>
-                                <Text>Статус: <Text display='inline-block' color={el.status === 'в ожидании' ? '#ff8d00' : 'green'}>{el.status}</Text></Text>
+                                <Text>Статус: <Text display='inline-block' color={el.status === 'в ожидании' ? '#ff8d00' : '#26bf00'}>{el.status}</Text></Text>
                                 <Text>Хозяин: {el.house.user.firstName ? <Text display='inline-block' fontWeight='500'>{el.house.user.firstName} {el.house.user.secondName}</Text> : <Text display='inline-block' opacity='.7'>Неизвестно</Text>}</Text>
                                 <Text>Телефон для справок: {el.house.user.phone}</Text>
                                 <Text>Дата брони: {moment(el.createdAt, 'x').format('DD.MM.YY')}</Text>
                                 <Text>Цена: <b>BYN {el.house.price} / ночь</b></Text>
                             </Box>
                         </Flex>
-                        <Divider orientation="vertical" opacity='.2' width='2px' bg='#333333' mx={5} />
-                        <Box fontWeight='600' w='400px'>
+                        <Divider h='auto' orientation="vertical" opacity='.2' width='2px' bg='#333333' mx={5} />
+                        <Box fontWeight='600' w={finished ? '540px' : '400px'}>
                             <Flex justifyContent='space-between' my='7px'>
                                 <Box>{`BYN ${el.house.price} x ${datediff(moment(el.startDate, 'x'), moment(el.endDate, 'x'))} ночей`}</Box>
                                 <Box>{`BYN ${el.house.price * datediff(moment(el.startDate, 'x'), moment(el.endDate, 'x'))}`}</Box>
@@ -62,30 +64,30 @@ const GetCustomerBookings: React.FC<GetCustomerBookingsProps> = ({ getCustomerBo
                                 <Box>Сборы за услуги JustRent</Box>
                                 <Box>{`BYN ${Math.round(14 / 100 * (el.house.price * datediff(moment(el.startDate, 'x'), moment(el.endDate, 'x'))))}`}</Box>
                             </Flex>
-                            <Divider my='10px' opacity='.2' height='.5px' bg='#333333' />
+                            <Divider h='auto' my='10px' opacity='.2' height='.5px' bg='#333333' />
                             <Flex justifyContent='space-between' my='7px'>
                                 <Box>Итого</Box>
                                 <Box>{`BYN ${Math.round((14 / 100 * (el.house.price * datediff(moment(el.startDate, 'x'), moment(el.endDate, 'x')))) + (el.house.price * datediff(moment(el.startDate, 'x'), moment(el.endDate, 'x'))))}`}</Box>
                             </Flex>
                         </Box>
-                        <Divider orientation="vertical" opacity='.2' width='2px' bg='#333333' mx={5} />
-                        <Flex w='90px' justifyContent='flex-end' alignItems='center'>
-                            <Tooltip label="Отменить бронирование?" aria-label="A tooltip">
-                                <Button
-                                    onClick={() => {
-                                        deleteBooking({
-                                            variables: { id: el.id }, update: (cache) => {
-                                                cache.evict({ id: 'Booking:' + el.id });
-                                            }
-                                        });
-                                    }}
-                                    fontSize='12px' aria-label="Delete order" colorScheme='red'><CloseIcon /></Button>
-                            </Tooltip>
+                        {finished ? null : <><Divider orientation="vertical" opacity='.2' width='2px' bg='#333333' mx={5} />
+                            <Flex w='90px' justifyContent='flex-end' alignItems='center'>
+                                <Tooltip label="Отменить бронирование?" aria-label="A tooltip">
+                                    <Button
+                                        onClick={() => {
+                                            deleteBooking({
+                                                variables: { id: el.id }, update: (cache) => {
+                                                    cache.evict({ id: 'Booking:' + el.id });
+                                                }
+                                            });
+                                        }}
+                                        fontSize='12px' aria-label="Delete order" colorScheme='red'><CloseIcon /></Button>
+                                </Tooltip>
 
-                        </Flex>
+                            </Flex></>}
 
                     </Flex>
-                )) : <Box fontSize='lg' opacity='.7'>У вас пока нет арендованного жилья</Box>
+                )) : <Box fontSize='lg' opacity='.7'>{finished ? 'У вас пока нет истории бронирования' : 'У вас пока нет арендованного жилья'}</Box>
             }
         </VStack>
     );

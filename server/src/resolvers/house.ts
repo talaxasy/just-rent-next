@@ -251,6 +251,7 @@ export class HouseResolver {
 
     @Query(() => [Booking], { nullable: true })
     async getCustomerBookings(
+        @Arg('finished', () => Boolean, { nullable: true }) finished: boolean,
         @Ctx() { req }: MyContext,
     ): Promise<Booking[] | undefined> {
 
@@ -262,14 +263,24 @@ export class HouseResolver {
             .innerJoinAndSelect("b.house", "h", "h.id = b.houseId")
             .orderBy('h.createdAt', 'DESC')
             .where('b.userId = :userId', { userId: req.session.userId })
-            .getMany();
 
-        return await qb;
+
+
+        if (!finished) {
+            qb.andWhere(`b.status != 'завершен'`)
+        } else {
+            qb.andWhere(`b.status = 'завершен'`)
+        }
+
+
+
+        return await qb.getMany();;
 
     }
 
     @Query(() => [Booking], { nullable: true })
     async getAdminBookings(
+        @Arg('finished', () => Boolean, { nullable: true }) finished: boolean,
         @Ctx() { req }: MyContext,
     ): Promise<Booking[] | undefined> {
 
@@ -297,10 +308,16 @@ export class HouseResolver {
             .innerJoinAndSelect("b.house", "h", "h.id = b.houseId")
             .orderBy('h.createdAt', 'DESC')
             .where(`houseId IN(${houseIds as number[]})`)
-            .andWhere(`status != 'завершен'`)
-            .getMany();
 
-        return await bookingList;
+
+
+        if (!finished) {
+            bookingList.andWhere(`b.status != 'завершен'`)
+        } else {
+            bookingList.andWhere(`b.status = 'завершен'`)
+        }
+
+        return await bookingList.getMany();
 
     }
 

@@ -18,8 +18,14 @@ const Bookings: React.FC<indexProps> = ({ }) => {
     const { data: meData, loading: meLoading } = useMeQuery();
 
     const { data: dataCustomer, loading: loadingCustomer } = useGetCustomerBookingsQuery();
+    const { data: dataCustomerHistory, loading: loadingCustomerHistory } = useGetCustomerBookingsQuery({
+        variables: {
+            finished: true
+        }
+    });
 
     const [customerList, setCustomerList] = useState<any>(undefined);
+    const [customerListHistory, setCustomerListHistory] = useState<any>(undefined);
 
     useEffect(() => {
         if (loadingCustomer && !dataCustomer?.getCustomerBookings) {
@@ -28,6 +34,15 @@ const Bookings: React.FC<indexProps> = ({ }) => {
             setCustomerList(<GetCustomerBookings meData={meData} getCustomerBookings={dataCustomer} />)
         }
     }, [loadingCustomer, dataCustomer]);
+
+
+    useEffect(() => {
+        if (loadingCustomerHistory && !dataCustomerHistory?.getCustomerBookings) {
+            setCustomerListHistory(<Box><Spinner /></Box>)
+        } else if (dataCustomerHistory?.getCustomerBookings && !loadingCustomerHistory) {
+            setCustomerListHistory(<GetCustomerBookings meData={meData} getCustomerBookings={dataCustomerHistory} finished />)
+        }
+    }, [loadingCustomerHistory, dataCustomerHistory]);
 
 
 
@@ -50,7 +65,8 @@ const Bookings: React.FC<indexProps> = ({ }) => {
 
                 <Text mt='30px' fontSize='4xl' fontWeight='bold'>История бронирования</Text>
                 <Divider opacity='.2' height='2px' bg='#333333' my={5} />
-                <Box h='200px'><Box fontSize='lg' opacity='.7'>У вас пока нет истории бронирования</Box></Box>
+                {customerListHistory}
+                <Box h='30px'></Box>
             </Wrapper>
         </Layout>
     );

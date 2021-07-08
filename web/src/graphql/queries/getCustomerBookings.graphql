@@ -1,5 +1,5 @@
-query GetCustomerBookings {
-  getCustomerBookings {
+query GetCustomerBookings($finished: Boolean) {
+  getCustomerBookings(finished: $finished) {
     id
     endDate
     startDate

@@ -209,7 +209,7 @@ const House: React.FC<HouseProps> = ({ }) => {
                                                         setStartDate(null);
                                                         setEndDate(null);
                                                     }
-                                                    router.push('/profile/dashboard');
+                                                    router.push('/profile/bookings');
                                                 }
 
                                             }}>

@@ -347,7 +347,7 @@ let HouseResolver = class HouseResolver {
             return undefined;
         });
     }
-    getCustomerBookings({ req }) {
+    getCustomerBookings(finished, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
             const qb = typeorm_1.getConnection()
                 .getRepository(Booking_1.Booking)
@@ -355,12 +355,18 @@ let HouseResolver = class HouseResolver {
                 .innerJoinAndSelect("b.user", "u", "u.id = b.userId")
                 .innerJoinAndSelect("b.house", "h", "h.id = b.houseId")
                 .orderBy('h.createdAt', 'DESC')
-                .where('b.userId = :userId', { userId: req.session.userId })
-                .getMany();
-            return yield qb;
+                .where('b.userId = :userId', { userId: req.session.userId });
+            if (!finished) {
+                qb.andWhere(`b.status != 'завершен'`);
+            }
+            else {
+                qb.andWhere(`b.status = 'завершен'`);
+            }
+            return yield qb.getMany();
+            ;
         });
     }
-    getAdminBookings({ req }) {
+    getAdminBookings(finished, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
             const adminHouses = yield House_1.House.find({ userId: req.session.userId });
             if (!adminHouses.length) {
@@ -378,10 +384,14 @@ let HouseResolver = class HouseResolver {
                 .innerJoinAndSelect("b.user", "u", "u.id = b.userId")
                 .innerJoinAndSelect("b.house", "h", "h.id = b.houseId")
                 .orderBy('h.createdAt', 'DESC')
-                .where(`houseId IN(${houseIds})`)
-                .andWhere(`status != 'завершен'`)
-                .getMany();
-            return yield bookingList;
+                .where(`houseId IN(${houseIds})`);
+            if (!finished) {
+                bookingList.andWhere(`b.status != 'завершен'`);
+            }
+            else {
+                bookingList.andWhere(`b.status = 'завершен'`);
+            }
+            return yield bookingList.getMany();
         });
     }
     getBookings(houseId) {
@@ -566,16 +576,18 @@ __decorate([
 ], HouseResolver.prototype, "searchListings", null);
 __decorate([
     type_graphql_1.Query(() => [Booking_1.Booking], { nullable: true }),
-    __param(0, type_graphql_1.Ctx()),
+    __param(0, type_graphql_1.Arg('finished', () => Boolean, { nullable: true })),
+    __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Boolean, Object]),
     __metadata("design:returntype", Promise)
 ], HouseResolver.prototype, "getCustomerBookings", null);
 __decorate([
     type_graphql_1.Query(() => [Booking_1.Booking], { nullable: true }),
-    __param(0, type_graphql_1.Ctx()),
+    __param(0, type_graphql_1.Arg('finished', () => Boolean, { nullable: true })),
+    __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Boolean, Object]),
     __metadata("design:returntype", Promise)
 ], HouseResolver.prototype, "getAdminBookings", null);
 __decorate([

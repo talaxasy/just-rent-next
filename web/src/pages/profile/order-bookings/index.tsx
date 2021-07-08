@@ -16,7 +16,13 @@ const OrderBookings: React.FC<indexProps> = ({ }) => {
     const { data: meData, loading: meLoading } = useMeQuery();
 
     const { data: dataAdmin, loading: loadingAdmin } = useGetAdminBookingsQuery();
+    const { data: dataAdminHistory, loading: loadingAdminHistory } = useGetAdminBookingsQuery({
+        variables: {
+            finished: true
+        }
+    });
     const [renderBookings, setRenderBookings] = useState<any>(undefined);
+    const [renderBookingsHistory, setRenderBookingsHistory] = useState<any>(undefined);
 
     useEffect(() => {
         if (loadingAdmin && !dataAdmin?.getAdminBookings) {
@@ -24,7 +30,15 @@ const OrderBookings: React.FC<indexProps> = ({ }) => {
         } else if (dataAdmin?.getAdminBookings && !loadingAdmin) {
             setRenderBookings(<AdminBookingOrdersComponent data={dataAdmin} meData={meData} />)
         }
-    }, [dataAdmin, loadingAdmin])
+    }, [dataAdmin, loadingAdmin]);
+
+    useEffect(() => {
+        if (loadingAdminHistory && !dataAdminHistory?.getAdminBookings) {
+            setRenderBookingsHistory(<Box><Spinner /></Box>)
+        } else if (dataAdminHistory?.getAdminBookings && !loadingAdminHistory) {
+            setRenderBookingsHistory(<AdminBookingOrdersComponent data={dataAdminHistory} meData={meData} finished />)
+        }
+    }, [dataAdminHistory, loadingAdminHistory]);
 
 
 
@@ -44,7 +58,9 @@ const OrderBookings: React.FC<indexProps> = ({ }) => {
                 {renderBookings}
                 <Text mt='30px' fontSize='4xl' fontWeight='bold'>История Заказов жилья</Text>
                 <Divider opacity='.2' height='2px' bg='#333333' my={5} />
-                <Box h='200px'><Box fontSize='lg' opacity='.7'>У вас пока нет истории заказов жилья</Box></Box>
+                {renderBookingsHistory}
+                {/* <Box h='200px'><Box fontSize='lg' opacity='.7'>У вас пока нет истории заказов жилья</Box></Box> */}
+                <Box h='30px'></Box>
             </Wrapper>
         </Layout>
     );

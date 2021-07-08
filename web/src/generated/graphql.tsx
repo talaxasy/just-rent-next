@@ -44,6 +44,16 @@ export type QuerySearchListingsArgs = {
 };
 
 
+export type QueryGetCustomerBookingsArgs = {
+  finished?: Maybe<Scalars['Boolean']>;
+};
+
+
+export type QueryGetAdminBookingsArgs = {
+  finished?: Maybe<Scalars['Boolean']>;
+};
+
+
 export type QueryGetBookingsArgs = {
   houseId: Scalars['Int'];
 };
@@ -615,7 +625,9 @@ export type DefaultRulesQuery = (
   )> }
 );
 
-export type GetAdminBookingsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetAdminBookingsQueryVariables = Exact<{
+  finished?: Maybe<Scalars['Boolean']>;
+}>;
 
 
 export type GetAdminBookingsQuery = (
@@ -647,7 +659,9 @@ export type GetBookingsQuery = (
   & Pick<Query, 'getBookings'>
 );
 
-export type GetCustomerBookingsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetCustomerBookingsQueryVariables = Exact<{
+  finished?: Maybe<Scalars['Boolean']>;
+}>;
 
 
 export type GetCustomerBookingsQuery = (
@@ -1431,8 +1445,8 @@ export type DefaultRulesQueryHookResult = ReturnType<typeof useDefaultRulesQuery
 export type DefaultRulesLazyQueryHookResult = ReturnType<typeof useDefaultRulesLazyQuery>;
 export type DefaultRulesQueryResult = Apollo.QueryResult<DefaultRulesQuery, DefaultRulesQueryVariables>;
 export const GetAdminBookingsDocument = gql`
-    query GetAdminBookings {
-  getAdminBookings {
+    query GetAdminBookings($finished: Boolean) {
+  getAdminBookings(finished: $finished) {
     id
     endDate
     startDate
@@ -1480,6 +1494,7 @@ export const GetAdminBookingsDocument = gql`
  * @example
  * const { data, loading, error } = useGetAdminBookingsQuery({
  *   variables: {
+ *      finished: // value for 'finished'
  *   },
  * });
  */
@@ -1528,8 +1543,8 @@ export type GetBookingsQueryHookResult = ReturnType<typeof useGetBookingsQuery>;
 export type GetBookingsLazyQueryHookResult = ReturnType<typeof useGetBookingsLazyQuery>;
 export type GetBookingsQueryResult = Apollo.QueryResult<GetBookingsQuery, GetBookingsQueryVariables>;
 export const GetCustomerBookingsDocument = gql`
-    query GetCustomerBookings {
-  getCustomerBookings {
+    query GetCustomerBookings($finished: Boolean) {
+  getCustomerBookings(finished: $finished) {
     id
     endDate
     startDate
@@ -1576,6 +1591,7 @@ export const GetCustomerBookingsDocument = gql`
  * @example
  * const { data, loading, error } = useGetCustomerBookingsQuery({
  *   variables: {
+ *      finished: // value for 'finished'
  *   },
  * });
  */
