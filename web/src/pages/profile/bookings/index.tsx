@@ -24,6 +24,7 @@ const Bookings: React.FC<indexProps> = ({ }) => {
         }
     });
 
+
     const [customerList, setCustomerList] = useState<any>(undefined);
     const [customerListHistory, setCustomerListHistory] = useState<any>(undefined);
 

@@ -13,7 +13,9 @@ const createClient = (ctx: any) => new ApolloClient({
                     ? ctx?.req?.headers.cookie
                     : undefined) || '',
         },
+
     }),
+
     cache: new InMemoryCache({
         typePolicies: {
             Query: {

@@ -1,7 +1,7 @@
 import { Box, Flex, StackDivider, Text, VStack, Image, Divider, Button, Tooltip } from '@chakra-ui/react';
 import moment from 'moment';
 import React from 'react'
-import { GetAdminBookingsQuery, GetCustomerBookingsQuery, MeQuery, useChangeBookingStatusMutation, useDeleteBookingMutation } from '../generated/graphql';
+import { GetAdminBookingsDocument, GetAdminBookingsQuery, GetCustomerBookingsQuery, MeQuery, useChangeBookingStatusMutation, useDeleteBookingMutation } from '../generated/graphql';
 import NextLink from 'next/link';
 import { CloseIcon, EditIcon } from '@chakra-ui/icons';
 import router from 'next/router';
@@ -78,18 +78,20 @@ const AdminBookingOrdersComponent: React.FC<AdminBookingOrdersComponentProps> = 
                                         mb='20px'
                                         onClick={() => {
                                             changeBookingStatus({
-                                                variables: { id: el.id, active: 1 }
+                                                variables: { id: el.id, active: 1 },
+                                                refetchQueries: [{
+                                                    query: GetAdminBookingsDocument,
+                                                }]
                                             });
-                                            router.reload();
                                         }}
                                         fontSize='12px' aria-label="SetActive order" colorScheme='green' width='100px'>Активировать</Button>
                                     : null}
                                 <Button
                                     onClick={() => {
                                         changeBookingStatus({
-                                            variables: { id: el.id, finished: 2 }
+                                            variables: { id: el.id, finished: 2 },
+                                            refetchQueries: [{ query: GetAdminBookingsDocument }]
                                         });
-                                        router.reload();
                                     }}
                                     fontSize='12px' aria-label="SetActive order" colorScheme='blue' width='100px'>Завершить</Button>
 

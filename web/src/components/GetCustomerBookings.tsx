@@ -77,6 +77,7 @@ const GetCustomerBookings: React.FC<GetCustomerBookingsProps> = ({ getCustomerBo
                                         onClick={() => {
                                             deleteBooking({
                                                 variables: { id: el.id }, update: (cache) => {
+                                                    console.log('cache: ', cache);
                                                     cache.evict({ id: 'Booking:' + el.id });
                                                 }
                                             });

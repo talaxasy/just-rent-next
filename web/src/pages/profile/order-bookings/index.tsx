@@ -52,14 +52,13 @@ const OrderBookings: React.FC<indexProps> = ({ }) => {
 
     return (
         <Layout footer>
-            <Wrapper>
+            <Wrapper type='profile'>
                 <Text mt='30px' fontSize='4xl' fontWeight='bold'>Заказы жилья</Text>
                 <Divider opacity='.2' height='2px' bg='#333333' my={5} />
                 {renderBookings}
                 <Text mt='30px' fontSize='4xl' fontWeight='bold'>История Заказов жилья</Text>
                 <Divider opacity='.2' height='2px' bg='#333333' my={5} />
                 {renderBookingsHistory}
-                {/* <Box h='200px'><Box fontSize='lg' opacity='.7'>У вас пока нет истории заказов жилья</Box></Box> */}
                 <Box h='30px'></Box>
             </Wrapper>
         </Layout>

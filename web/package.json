@@ -2,13 +2,12 @@
   "name": "app-just-rent",
   "version": "1.0.0",
   "scripts": {
-    "dev": "next",
+    "dev": "next -p 3000",
     "build": "next build",
     "start": "next start",
     "gen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
-    "-": "^0.0.1",
     "@apollo/client": "^3.3.19",
     "@chakra-ui/icons": "^1.0.2",
     "@chakra-ui/react": "^1.0.4",
@@ -20,7 +19,8 @@
     "@urql/exchange-graphcache": "^3.3.3",
     "apollo-upload-client": "^15.0.0",
     "doka": "^0.1.0",
-    "eslint-plugin-react-hooks": "^4.2.0",
+    "dotenv": "^10.0.0",
+    "eslint-plugin-react-hooks": "^1.7.0",
     "formik": "^2.2.6",
     "formik-chakra-ui": "^1.4.7",
     "framer-motion": "^2.9.4",
@@ -30,6 +30,8 @@
     "next": "latest",
     "next-apollo": "^5.0.4",
     "next-urql": "^2.1.1",
+    "nextjs-breadcrumbs": "^1.1.9",
+    "prettier": "^2.3.2",
     "react": "^17.0.1",
     "react-dates": "^21.8.0",
     "react-dom": "^17.0.1",
@@ -50,6 +52,8 @@
     "@graphql-codegen/typescript-operations": "1.17.13",
     "@graphql-codegen/typescript-react-apollo": "^2.2.5",
     "@graphql-codegen/typescript-urql": "^2.0.3",
+    "@types/dotenv": "^8.2.0",
+    "@types/live-server": "^1.2.1",
     "@types/moment": "^2.13.0",
     "@types/node": "^14.6.0",
     "@types/react": "^16.9.46",
@@ -57,7 +61,34 @@
     "@types/react-dom": "^16.9.8",
     "@types/react-geosuggest": "^2.7.11",
     "@types/styled-jsx": "^2.2.8",
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb": "18.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.21.5",
+    "live-server": "^1.2.1",
     "typescript": "4.0.5"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "eslintConfig": {
+    "extends": "airbnb"
+  },
+  "prettier": {
+    "$schema": "http://json.schemastore.org/prettierrc",
+    "arrowParens": "avoid",
+    "bracketSpacing": false,
+    "jsxBracketSameLine": false,
+    "jsxSingleQuote": false,
+    "printWidth": 100,
+    "proseWrap": "always",
+    "quoteProps": "as-needed",
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "es5",
+    "useTabs": false,
+    "[javascript]": {
+      "editor.formatOnSave": true
+    }
+  }
 }

@@ -67,7 +67,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const redis = new ioredis_1.default();
     app.use(graphql_upload_1.graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
     app.use(cors_1.default({
-        origin: 'http://localhost:3000',
+        origin: "http://localhost:3000",
         credentials: true
     }));
     app.use(express_session_1.default({

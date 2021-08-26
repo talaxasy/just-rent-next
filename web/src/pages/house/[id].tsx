@@ -10,7 +10,7 @@ import FormikControl from '../../components/FormikControl';
 import CountInput from '../../components/inputs/CountInput';
 import Layout from '../../components/Layout';
 import Wrapper from '../../components/Wrapper';
-import { GetBookingsQuery, HouseQuery, useDoBookingMutation, useGetBookingsQuery } from '../../generated/graphql';
+import { DoBookingDocument, GetAdminBookingsDocument, GetBookingsDocument, GetBookingsQuery, GetCustomerBookingsDocument, HouseQuery, useDoBookingMutation, useGetBookingsQuery } from '../../generated/graphql';
 import { useGetHouseFromUrl } from '../../utils/useGetHouseFromUrl';
 import { withApollo } from '../../utils/withApollo';
 
@@ -202,7 +202,8 @@ const House: React.FC<HouseProps> = ({ }) => {
                                                             endDate: values.endDate,
                                                             guests_count: values.guests_count,
                                                             houseId: data.house!.id,
-                                                        }
+                                                        },
+                                                        refetchQueries: [{ query: GetCustomerBookingsDocument }]
                                                     });
                                                     if (myData?.doBooking) {
                                                         setArrayDates(myData.doBooking.map(el => moment(el, 'DD-MM-YY')));

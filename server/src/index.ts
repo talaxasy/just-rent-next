@@ -74,7 +74,7 @@ const main = async () => {
     app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 
     app.use(cors({
-        origin: 'http://localhost:3000',
+        origin: "http://localhost:3000",
         credentials: true
     }));
 

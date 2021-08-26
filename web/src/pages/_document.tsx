@@ -1,5 +1,6 @@
 import NextDocument, { Html, Head, Main, NextScript } from 'next/document';
 import { ColorModeScript } from '@chakra-ui/react';
+import { GOOGLE_API_KEY } from '../utils/constants';
 
 
 export default class Document extends NextDocument {
@@ -8,7 +9,7 @@ export default class Document extends NextDocument {
     return (
       <Html>
         <Head>
-          <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4BAtvI2pcZ256O76D2S61ZFz4UBafK3c&libraries=geometry,drawing,places"></script>
+          <script src={GOOGLE_API_KEY}></script>
         </Head>
         <body>
           {/* Make Color mode to persists when you refresh the page. */}
