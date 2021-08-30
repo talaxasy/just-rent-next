@@ -1,0 +1,2 @@
+SSR => if content (text) will coming from the server
+CSR => where almost whole content integrated (hardcoded) in DOM

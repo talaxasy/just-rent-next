@@ -92,9 +92,6 @@
     "singleQuote": true,
     "tabWidth": 2,
     "trailingComma": "es5",
-    "useTabs": false,
-    "[javascript]": {
-      "editor.formatOnSave": true
-    }
+    "useTabs": false
   }
 }

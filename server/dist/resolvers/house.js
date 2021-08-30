@@ -26,17 +26,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HouseResolver = void 0;
 const graphql_upload_1 = require("graphql-upload");
-const User_1 = require("../entities/User");
+const moment_1 = __importDefault(require("moment"));
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
+const Booking_1 = require("../entities/Booking");
 const House_1 = require("../entities/House");
 const Review_1 = require("../entities/Review");
-const isAuth_1 = require("./../utils/middleware/isAuth");
-const ErrorFields_1 = require("./types/ErrorFields");
-const processImage_1 = require("./../utils/processImage");
+const User_1 = require("../entities/User");
 const deleteHouseImages_1 = require("./../utils/deleteHouseImages");
-const Booking_1 = require("../entities/Booking");
-const moment_1 = __importDefault(require("moment"));
+const isAuth_1 = require("./../utils/middleware/isAuth");
+const processImage_1 = require("./../utils/processImage");
+const ErrorFields_1 = require("./types/ErrorFields");
 let ReviewInput = class ReviewInput {
 };
 __decorate([
@@ -285,16 +285,18 @@ let HouseResolver = class HouseResolver {
     }
     searchListings({ guests_count, city, country, street, state }) {
         return __awaiter(this, void 0, void 0, function* () {
-            let listing = typeorm_1.getConnection()
-                .getRepository(House_1.House)
-                .createQueryBuilder('h');
+            let listing = typeorm_1.getConnection().getRepository(House_1.House).createQueryBuilder('h');
             let step1 = null;
             if (city && state && street && country && guests_count) {
-                step1 = yield House_1.House.find({ where: { city, state, street, country, guests_count: typeorm_1.MoreThanOrEqual(guests_count) } });
+                step1 = yield House_1.House.find({
+                    where: { city, state, street, country, guests_count: typeorm_1.MoreThanOrEqual(guests_count) },
+                });
             }
             let step2 = null;
             if (city && state && street && guests_count) {
-                step2 = yield House_1.House.find({ where: { city, state, street, guests_count: typeorm_1.MoreThanOrEqual(guests_count) } });
+                step2 = yield House_1.House.find({
+                    where: { city, state, street, guests_count: typeorm_1.MoreThanOrEqual(guests_count) },
+                });
             }
             let step3 = null;
             if (city && state && guests_count) {
@@ -302,7 +304,9 @@ let HouseResolver = class HouseResolver {
             }
             let step4 = null;
             if (street && state && guests_count) {
-                step4 = yield House_1.House.find({ where: { street, state, guests_count: typeorm_1.MoreThanOrEqual(guests_count) } });
+                step4 = yield House_1.House.find({
+                    where: { street, state, guests_count: typeorm_1.MoreThanOrEqual(guests_count) },
+                });
             }
             let step5 = null;
             if (state && guests_count) {
@@ -352,8 +356,8 @@ let HouseResolver = class HouseResolver {
             const qb = typeorm_1.getConnection()
                 .getRepository(Booking_1.Booking)
                 .createQueryBuilder('b')
-                .innerJoinAndSelect("b.user", "u", "u.id = b.userId")
-                .innerJoinAndSelect("b.house", "h", "h.id = b.houseId")
+                .innerJoinAndSelect('b.user', 'u', 'u.id = b.userId')
+                .innerJoinAndSelect('b.house', 'h', 'h.id = b.houseId')
                 .orderBy('h.createdAt', 'DESC')
                 .where('b.userId = :userId', { userId: req.session.userId });
             if (!finished) {
@@ -363,7 +367,6 @@ let HouseResolver = class HouseResolver {
                 qb.andWhere(`b.status = 'завершен'`);
             }
             return yield qb.getMany();
-            ;
         });
     }
     getAdminBookings(finished, { req }) {
@@ -381,8 +384,8 @@ let HouseResolver = class HouseResolver {
             const bookingList = typeorm_1.getConnection()
                 .getRepository(Booking_1.Booking)
                 .createQueryBuilder('b')
-                .innerJoinAndSelect("b.user", "u", "u.id = b.userId")
-                .innerJoinAndSelect("b.house", "h", "h.id = b.houseId")
+                .innerJoinAndSelect('b.user', 'u', 'u.id = b.userId')
+                .innerJoinAndSelect('b.house', 'h', 'h.id = b.houseId')
                 .orderBy('h.createdAt', 'DESC')
                 .where(`houseId IN(${houseIds})`);
             if (!finished) {
@@ -419,7 +422,7 @@ let HouseResolver = class HouseResolver {
                     guests_count,
                     userId: req.session.userId,
                     houseId,
-                    status: 'в ожидании'
+                    status: 'в ожидании',
                 });
             }
             catch (_a) {
@@ -448,10 +451,12 @@ let HouseResolver = class HouseResolver {
             }
             else {
                 return {
-                    errors: [{
-                            field: "file",
+                    errors: [
+                        {
+                            field: 'file',
                             message: 'Загрузите хотя бы 1 изображение',
-                        }]
+                        },
+                    ],
                 };
             }
             house = yield House_1.House.create(Object.assign({ userId: req.session.userId, pictureUrl }, input)).save();
@@ -479,9 +484,9 @@ let HouseResolver = class HouseResolver {
             const qb = typeorm_1.getConnection()
                 .getRepository(House_1.House)
                 .createQueryBuilder('h')
-                .innerJoinAndSelect("h.user", "u", "u.id = h.userId")
-                .innerJoinAndSelect("h.room_type", "rt", "rt.id = h.room_typeId")
-                .innerJoinAndSelect("h.house_type", "ht", "ht.id = h.house_typeId")
+                .innerJoinAndSelect('h.user', 'u', 'u.id = h.userId')
+                .innerJoinAndSelect('h.room_type', 'rt', 'rt.id = h.room_typeId')
+                .innerJoinAndSelect('h.house_type', 'ht', 'ht.id = h.house_typeId')
                 .orderBy('h.createdAt', 'DESC')
                 .take(realLimitPlusOne);
             if (cursor) {
@@ -553,16 +558,14 @@ __decorate([
 ], HouseResolver.prototype, "textSnippet", null);
 __decorate([
     type_graphql_1.FieldResolver(() => User_1.User),
-    __param(0, type_graphql_1.Root()),
-    __param(1, type_graphql_1.Ctx()),
+    __param(0, type_graphql_1.Root()), __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [House_1.House, Object]),
     __metadata("design:returntype", void 0)
 ], HouseResolver.prototype, "user", null);
 __decorate([
     type_graphql_1.FieldResolver(() => Review_1.Review),
-    __param(0, type_graphql_1.Root()),
-    __param(1, type_graphql_1.Ctx()),
+    __param(0, type_graphql_1.Root()), __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [House_1.House, Object]),
     __metadata("design:returntype", Promise)
@@ -621,8 +624,7 @@ __decorate([
 __decorate([
     type_graphql_1.Mutation(() => Boolean),
     type_graphql_1.UseMiddleware(isAuth_1.isAuth),
-    __param(0, type_graphql_1.Arg('options')),
-    __param(1, type_graphql_1.Ctx()),
+    __param(0, type_graphql_1.Arg('options')), __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [ReviewInput, Object]),
     __metadata("design:returntype", Promise)
@@ -658,8 +660,7 @@ __decorate([
 __decorate([
     type_graphql_1.Mutation(() => Boolean),
     type_graphql_1.UseMiddleware(isAuth_1.isAuth),
-    __param(0, type_graphql_1.Arg('id', () => type_graphql_1.Int)),
-    __param(1, type_graphql_1.Ctx()),
+    __param(0, type_graphql_1.Arg('id', () => type_graphql_1.Int)), __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
@@ -667,8 +668,7 @@ __decorate([
 __decorate([
     type_graphql_1.Mutation(() => Boolean),
     type_graphql_1.UseMiddleware(isAuth_1.isAuth),
-    __param(0, type_graphql_1.Arg('id', () => type_graphql_1.Int)),
-    __param(1, type_graphql_1.Ctx()),
+    __param(0, type_graphql_1.Arg('id', () => type_graphql_1.Int)), __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)

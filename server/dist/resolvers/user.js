@@ -59,30 +59,36 @@ let UserResolver = class UserResolver {
         return __awaiter(this, void 0, void 0, function* () {
             if (newPassword.length <= 3) {
                 return {
-                    errors: [{
-                            field: "newPassword",
-                            message: 'Пароль должен быть не меньше 4 символов'
-                        }]
+                    errors: [
+                        {
+                            field: 'newPassword',
+                            message: 'Пароль должен быть не меньше 4 символов',
+                        },
+                    ],
                 };
             }
             const redisKey = constants_1.FORGET_PASSWORD_PREFIX + token;
             const userId = yield redis.get(redisKey);
             if (!userId) {
                 return {
-                    errors: [{
-                            field: "token",
-                            message: 'Время изменения пароля закончилось'
-                        }]
+                    errors: [
+                        {
+                            field: 'token',
+                            message: 'Время изменения пароля закончилось',
+                        },
+                    ],
                 };
             }
             const userIdNum = parseInt(userId);
             const user = yield User_1.User.findOne(userIdNum);
             if (!user) {
                 return {
-                    errors: [{
-                            field: "token",
-                            message: 'Пользователя больше не существует'
-                        }]
+                    errors: [
+                        {
+                            field: 'token',
+                            message: 'Пользователя больше не существует',
+                        },
+                    ],
                 };
             }
             yield User_1.User.update({ id: userIdNum }, { password: yield argon2_1.default.hash(newPassword) });
@@ -124,57 +130,73 @@ let UserResolver = class UserResolver {
         return __awaiter(this, void 0, void 0, function* () {
             if (options.username.length <= 4) {
                 return {
-                    errors: [{
-                            field: "username",
-                            message: 'Длинна логина не должна быть меньше 5 символов'
-                        }]
+                    errors: [
+                        {
+                            field: 'username',
+                            message: 'Длинна логина не должна быть меньше 5 символов',
+                        },
+                    ],
                 };
             }
             const compareUsername = yield User_1.User.findOne({ where: { username: options.username } });
             if (compareUsername) {
                 return {
-                    errors: [{
-                            field: "username",
-                            message: 'Такой пользователь уже существует'
-                        }]
+                    errors: [
+                        {
+                            field: 'username',
+                            message: 'Такой пользователь уже существует',
+                        },
+                    ],
                 };
             }
             if (!options.email.includes('@') && options.email.length <= 6) {
                 return {
-                    errors: [{
-                            field: "email",
-                            message: 'Некорректная почта'
-                        }]
+                    errors: [
+                        {
+                            field: 'email',
+                            message: 'Некорректная почта',
+                        },
+                    ],
                 };
             }
             const compareEmailUser = yield User_1.User.findOne({ where: { email: options.email } });
             if (compareEmailUser) {
                 return {
-                    errors: [{
-                            field: "email",
-                            message: 'Такая почта уже есть в базе'
-                        }]
+                    errors: [
+                        {
+                            field: 'email',
+                            message: 'Такая почта уже есть в базе',
+                        },
+                    ],
                 };
             }
             if (options.password.length <= 3) {
                 return {
-                    errors: [{
-                            field: "password",
-                            message: 'Пароль должен быть не меньше 4 символов'
-                        }]
+                    errors: [
+                        {
+                            field: 'password',
+                            message: 'Пароль должен быть не меньше 4 символов',
+                        },
+                    ],
                 };
             }
             const hashedPassword = yield argon2_1.default.hash(options.password);
             let user;
             try {
-                user = yield User_1.User.create({ username: options.username, password: hashedPassword, email: options.email }).save();
+                user = yield User_1.User.create({
+                    username: options.username,
+                    password: hashedPassword,
+                    email: options.email,
+                }).save();
             }
             catch (error) {
                 return {
-                    errors: [{
-                            field: "password",
+                    errors: [
+                        {
+                            field: 'password',
                             message: error.ToString(),
-                        }]
+                        },
+                    ],
                 };
             }
             req.session.userId = user.id;
@@ -188,19 +210,23 @@ let UserResolver = class UserResolver {
                 : { where: { username: usernameOrEmail } });
             if (!user) {
                 return {
-                    errors: [{
-                            field: "usernameOrEmail",
-                            message: 'Такого пользователя не существует'
-                        }]
+                    errors: [
+                        {
+                            field: 'usernameOrEmail',
+                            message: 'Такого пользователя не существует',
+                        },
+                    ],
                 };
             }
             const valid = yield argon2_1.default.verify(user.password, password);
             if (!valid) {
                 return {
-                    errors: [{
-                            field: "password",
-                            message: 'Неправильный пароль'
-                        }]
+                    errors: [
+                        {
+                            field: 'password',
+                            message: 'Неправильный пароль',
+                        },
+                    ],
                 };
             }
             req.session.userId = user.id;
@@ -220,8 +246,7 @@ let UserResolver = class UserResolver {
 };
 __decorate([
     type_graphql_1.FieldResolver(() => String),
-    __param(0, type_graphql_1.Root()),
-    __param(1, type_graphql_1.Ctx()),
+    __param(0, type_graphql_1.Root()), __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [User_1.User, Object]),
     __metadata("design:returntype", void 0)
@@ -249,8 +274,7 @@ __decorate([
 ], UserResolver.prototype, "updateUser", null);
 __decorate([
     type_graphql_1.Mutation(() => Boolean),
-    __param(0, type_graphql_1.Arg('email')),
-    __param(1, type_graphql_1.Ctx()),
+    __param(0, type_graphql_1.Arg('email')), __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)

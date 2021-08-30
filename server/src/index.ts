@@ -1,49 +1,42 @@
 // Diffrent Packages
-import 'reflect-metadata'
-import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { buildSchema } from 'type-graphql';
-import cors from 'cors'
-import { createConnection } from 'typeorm';
-import path from 'path';
+import connectRedis from 'connect-redis';
+import cors from 'cors';
+import express from 'express';
+import session from 'express-session';
 import { graphqlUploadExpress } from 'graphql-upload';
-
 // Redis
 import Redis from 'ioredis';
-import session from 'express-session';
-import connectRedis from 'connect-redis';
-
+import path from 'path';
+import 'reflect-metadata';
+import { buildSchema } from 'type-graphql';
+import { createConnection } from 'typeorm';
+import { COOKIE_NAME, __prod__ } from './constants';
+import { Booking } from './entities/Booking';
+import { DefaultAmenities } from './entities/DefaultAmenities';
+import { DefaultRules } from './entities/DefaultRules';
+import { House } from './entities/House';
+import { HouseType } from './entities/HouseType';
+import { Review } from './entities/Review';
+import { RoomType } from './entities/RoomType';
+import { SafetyAmeneties } from './entities/SafetyAmeneties';
+import { User } from './entities/User';
+import { DefaultEntities } from './resolvers/defaultEntities';
+import { HouseResolver } from './resolvers/house';
 //My Libs
 import { UserResolver } from './resolvers/user';
-import { DefaultEntities } from './resolvers/defaultEntities';
-import { __prod__ } from './constants';
-import { HouseResolver } from './resolvers/house';
 import { MyContext } from './types';
-import { COOKIE_NAME } from './constants';
-import { House } from './entities/House';
-import { User } from './entities/User';
-import { Review } from './entities/Review';
-import { HouseType } from './entities/HouseType';
-import { RoomType } from './entities/RoomType';
-import { DefaultAmenities } from './entities/DefaultAmenities';
-import { SafetyAmeneties } from './entities/SafetyAmeneties';
-import { DefaultRules } from './entities/DefaultRules';
-import dayjs from 'dayjs';
 import { createReviewCountLoader } from './utils/createReviewCountLoader';
 import { createUserLoader } from './utils/createUserLoader';
-import { Booking } from './entities/Booking';
-
-
 
 const main = async () => {
-
     const conn = await createConnection({
-        type: "mysql",
-        host: "localhost",
+        type: 'mysql',
+        host: 'localhost',
         port: 3306,
-        username: "root",
-        password: "troll233233",
-        database: "justrentorm",
+        username: 'root',
+        password: 'troll233233',
+        database: 'justrentorm',
         logging: true,
         migrations: [path.join(__dirname, './migrations/*')],
         synchronize: true,
@@ -56,10 +49,9 @@ const main = async () => {
             DefaultAmenities,
             DefaultRules,
             SafetyAmeneties,
-            Booking
-        ]
+            Booking,
+        ],
     });
-
 
     //await conn.runMigrations();
     //await Review.delete({});
@@ -73,12 +65,12 @@ const main = async () => {
 
     app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 
-    app.use(cors({
-        origin: "http://localhost:3000",
-        credentials: true
-    }));
-
-
+    app.use(
+        cors({
+            origin: 'http://localhost:3000',
+            credentials: true,
+        })
+    );
 
     app.use(
         session({
@@ -86,13 +78,12 @@ const main = async () => {
             store: new RedisStore({
                 client: redis,
                 disableTouch: true,
-
             }),
             cookie: {
                 maxAge: 1000 * 60 * 60 * 24 * 365 * 3, // 3 years
                 httpOnly: true,
                 sameSite: 'lax',
-                secure: __prod__ // Cookies only works in https
+                secure: __prod__, // Cookies only works in https
             },
             saveUninitialized: false,
             secret: 'jkjgvnsnsdkjnkjuvbbuweovevalkdv',
@@ -100,24 +91,20 @@ const main = async () => {
         })
     );
 
-
     const apolloServer = new ApolloServer({
         schema: await buildSchema({
             resolvers: [HouseResolver, UserResolver, DefaultEntities],
             validate: false,
         }),
-        context: ({ req, res }): MyContext => (
-            {
-                req,
-                res,
-                redis,
-                userLoader: createUserLoader(),
-                reviewLoader: createReviewCountLoader(),
-            }
-        ),
-        uploads: false
+        context: ({ req, res }): MyContext => ({
+            req,
+            res,
+            redis,
+            userLoader: createUserLoader(),
+            reviewLoader: createReviewCountLoader(),
+        }),
+        uploads: false,
     });
-
 
     apolloServer.applyMiddleware({ app, cors: false });
 
@@ -126,9 +113,7 @@ const main = async () => {
     app.listen(4000, () => {
         console.log('server started on localhost:4000');
     });
-
 };
-
 
 main().catch(err => {
     console.log(err);

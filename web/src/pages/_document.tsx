@@ -1,10 +1,8 @@
-import NextDocument, { Html, Head, Main, NextScript } from 'next/document';
-import { ColorModeScript } from '@chakra-ui/react';
-import { GOOGLE_API_KEY } from '../utils/constants';
-
+import NextDocument, {Html, Head, Main, NextScript} from 'next/document';
+import {ColorModeScript} from '@chakra-ui/react';
+import {GOOGLE_API_KEY} from '../utils/constants';
 
 export default class Document extends NextDocument {
-
   render() {
     return (
       <Html>
@@ -16,9 +14,8 @@ export default class Document extends NextDocument {
           <ColorModeScript />
           <Main />
           <NextScript />
-
         </body>
       </Html>
-    )
+    );
   }
 }
