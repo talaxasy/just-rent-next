@@ -1,4 +1,4 @@
-import {Box, Button} from '@chakra-ui/react';
+import {Box, Button, Spinner} from '@chakra-ui/react';
 import {Form, Formik} from 'formik';
 import {useRouter} from 'next/router';
 import React from 'react';
@@ -14,8 +14,10 @@ import {withApollo} from '../utils/withApollo';
 interface registerProps {}
 
 const Register: React.FC<registerProps> = ({}) => {
-  const {loading, data: meData} = useIsAuth({redirectTo: '/login'});
-  if (!meData?.me || loading) return <Spinner />;
+  // const {loading, data: meData} = useIsAuth({redirectTo: '/login'});
+  // if (meData?.me || loading) return <Spinner />;
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   const [register] = useRegisterMutation();
   const router = useRouter();
   return (

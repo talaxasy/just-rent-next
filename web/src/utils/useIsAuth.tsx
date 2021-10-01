@@ -1,7 +1,7 @@
 import {Spinner} from '@chakra-ui/react';
 import {useRouter} from 'next/router';
-import {useEffect} from 'react';
 import {useMeQuery} from '../generated/graphql';
+import React, {useEffect, useState} from 'react';
 
 export const useIsAuth = (obj: {redirectTo: string}) => {
   const {data, loading} = useMeQuery();

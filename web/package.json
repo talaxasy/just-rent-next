@@ -14,10 +14,12 @@
     "@chakra-ui/theme-tools": "^1.0.2",
     "@emotion/react": "11.1.1",
     "@emotion/styled": "11.0.0",
+    "@types/chalk-animation": "^1.6.1",
     "@types/react-dropzone": "^5.1.0",
     "@types/styled-components": "^5.1.10",
     "@urql/exchange-graphcache": "^3.3.3",
     "apollo-upload-client": "^15.0.0",
+    "chalk-animation": "^1.6.0",
     "doka": "^0.1.0",
     "dotenv": "^10.0.0",
     "eslint-plugin-react-hooks": "^1.7.0",
@@ -71,7 +73,10 @@
   },
   "license": "MIT",
   "eslintConfig": {
-    "extends": ["airbnb", "prettier"]
+    "extends": [
+      "airbnb",
+      "prettier"
+    ]
   },
   "prettier": {
     "arrowParens": "avoid",
@@ -89,6 +94,5 @@
     "[javascript]": {
       "editor.formatOnSave": true
     }
-    
   }
 }

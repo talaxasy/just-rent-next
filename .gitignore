@@ -1,6 +1,7 @@
-node_modules/
-.next/
+node_modules
+.next
+.dist
 /server/public/*
-.dist/
+dist
 .env
 constants.ts
